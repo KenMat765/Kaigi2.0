@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 853e5f708b0d65244a3883bca8b79522, type: 3}
+  m_Name: PretiaSDKProjectSettings
+  m_EditorClassIdentifier: 
+  _appKey: 3641cee59699db611bf7eb4fd1a4bd17bc1c00dc454b18ad60f1980a886523fe
+  _initializeOnStartup: 1
+  LobbyServerAddress: arc-lobby-server.pretiaar.com
+  LobbyServerPort: 4321
+  RelocServerAddress: arc-reloc.pretiaar.com
+  RelocServerPort: 80
+  PublicMapServerAddress: https://arc-map-public.pretiaar.com
+  DeveloperServerAddress: https://arc-developer.pretiaar.com

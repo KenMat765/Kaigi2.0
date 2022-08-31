@@ -1,0 +1,15 @@
+{
+    "name": "PretiaSDK.Samples.MapBasedRelocSample",
+    "references": [
+        "GUID:0a26a169a3ac06f43b80126430ffe918"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

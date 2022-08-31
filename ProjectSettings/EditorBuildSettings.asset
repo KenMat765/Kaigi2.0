@@ -1,0 +1,15 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Samples/BubbleGraph/BubbleGraph.unity
+    guid: 1502d7eaa7a334ccd829ac26ed4f25fc
+  m_configObjects:
+    UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: 0a115139a20d249dc97fc270095ecc7e, type: 2}
+    UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: bee4f6f9186a541cc9b6e8c9471f2692, type: 2}
+    com.unity.addressableassets: {fileID: 11400000, guid: a911ef1e645fc448fa88701a780d9427, type: 2}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 23ae6f3d8d21b4bf682e25278f28132b, type: 2}
