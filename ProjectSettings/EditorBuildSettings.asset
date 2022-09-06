@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/BubbleGraph/BubbleGraph.unity
+    path: Assets/BubbleGraph/Scene/BubbleGraph.unity
     guid: 1502d7eaa7a334ccd829ac26ed4f25fc
   m_configObjects:
     UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: 0a115139a20d249dc97fc270095ecc7e, type: 2}

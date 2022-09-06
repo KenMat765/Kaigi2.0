@@ -21,19 +21,15 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: BubbleMaterial 1
-  m_Shader: {fileID: 4800000, guid: 650dd9526735d5b46b79224bc6e94025, type: 3}
-  m_ValidKeywords:
-  - _SURFACE_TYPE_TRANSPARENT
+  m_Shader: {fileID: -6465566751694194690, guid: f46f914ebe94942529d20607c328ab8f, type: 3}
+  m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3000
-  stringTagMap:
-    RenderType: Transparent
-  disabledShaderPasses:
-  - DepthOnly
-  - SHADOWCASTER
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -77,6 +73,18 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _SampleTexture2DLOD_9c78bde11ef746e992acd57674bd235c_Texture_1:
+        m_Texture: {fileID: 2800000, guid: 0795d12973f44471290fc226b15bc094, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2DLOD_e2d13090af8a4cc898d4905240100e70_Texture_1:
+        m_Texture: {fileID: 2800000, guid: e697c5e159afe4188af1fd2e7ba975b4, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2DLOD_eb71f9bbb29c4e20a4043cd6db6f45e7_Texture_1:
+        m_Texture: {fileID: 2800000, guid: e697c5e159afe4188af1fd2e7ba975b4, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -96,26 +104,43 @@ Material:
     m_Ints: []
     m_Floats:
     - _AlphaClip: 0
+    - _BackAlpha: 0.15
     - _Blend: 0
     - _BlendOp: 0
+    - _Brightness: 0.2
     - _BumpScale: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
+    - _ContBrightness: 1.5
     - _Cull: 2
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 10
     - _EnvironmentReflections: 1
+    - _Frequency: 0.1
+    - _Frequency2: 0.4
+    - _FresnelBrightness: 1.2
+    - _FresnelPower: 1.5
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _Metallic: 0
+    - _NoisePower: 1.2
+    - _NoiseProp: 0.5
+    - _NoiseScale: 0.05
+    - _NoiseScale2: 0.1
+    - _NoiseSharpness: 0.5
+    - _NoiseSharpness2: 1.5
     - _OcclusionStrength: 1
+    - _Offset: 0.002
     - _Parallax: 0.005
+    - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 0
     - _SampleGI: 0
+    - _ScrollSpeed: 0.8
+    - _ScrollSpeed2: 0.15
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
@@ -125,7 +150,8 @@ Material:
     - _ZWrite: 0
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 0.4}
-    - _Color: {r: 1, g: 1, b: 1, a: 0.4}
+    - _Color: {r: 1, g: 0, b: 0.90980387, a: 1}
+    - _Emission: {r: 0.4245283, g: 0, b: 0.35460603, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
   m_BuildTextureStacks: []

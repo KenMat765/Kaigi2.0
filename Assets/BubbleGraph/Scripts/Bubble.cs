@@ -16,44 +16,10 @@ public class Bubble : MonoBehaviour
 
     // These parameters are saved in history.
     Existence existence = Existence.BEFORE_GENERATION;
-    public List<Bubble> connectedBubbles { get; set; }
-    public List<Node> connectedNodes { get; set; }
+    public List<Bubble> connectedBubbles { get; set; } = new List<Bubble>();
+    public List<Node> connectedNodes { get; set; } = new List<Node>();
 
     Dictionary<int, BubbleState> bubbleHistory = new Dictionary<int, BubbleState>();
-
-
-
-
-
-    // 
-    // 
-    // 
-    // For Debug.
-    [SerializeField] GameObject red;
-    [SerializeField] GameObject green;
-    [SerializeField] int historyCount;
-
-
-
-
-
-    void Awake()
-    {
-        connectedBubbles = new List<Bubble>();
-        connectedNodes = new List<Node>();
-        tmp = GetComponentInChildren<TextMeshProUGUI>();
-    }
-
-    void Update()
-    {
-        // 
-        // 
-        // 
-        // For Debug.
-        red.SetActive(focused);
-        green.SetActive(selected);
-        historyCount = bubbleHistory.Count;
-    }
 
 
 
@@ -64,6 +30,7 @@ public class Bubble : MonoBehaviour
     public void Generate(int id, string input_text)
     {
         bubbleId = id;
+        tmp = GetComponentInChildren<TextMeshProUGUI>();
         tmp.text = input_text;
         existence = Existence.EXISTS;
     }

@@ -23,13 +23,6 @@ public class BubbleController : Singleton<BubbleController>
 
 
 
-    // Device.
-    GameObject arCamera;
-    Vector3 devicePosition { get { return arCamera.transform.localPosition; } }
-    Vector3 deviceDirection { get { return arCamera.transform.forward; } }
-
-
-
     // Graph Actions.
     public enum GraphAction { NONE, GENERATE, SELECT, HISTORY }
     GraphAction graphAction;
@@ -49,14 +42,20 @@ public class BubbleController : Singleton<BubbleController>
         {
             case GraphAction.NONE: break;
             case GraphAction.GENERATE: voiceInputButton.gameObject.SetActive(false); break;
-            case GraphAction.SELECT: raycastButton.gameObject.SetActive(false); break;
+            case GraphAction.SELECT:
+                raycastButton.gameObject.SetActive(false);
+                TargetController.I.DeactivateAllTargets();
+                break;
             case GraphAction.HISTORY: historySlider.gameObject.SetActive(false); break;
         }
         switch (new_action)
         {
             case GraphAction.NONE: break;
             case GraphAction.GENERATE: voiceInputButton.gameObject.SetActive(true); break;
-            case GraphAction.SELECT: raycastButton.gameObject.SetActive(true); break;
+            case GraphAction.SELECT:
+                raycastButton.gameObject.SetActive(true);
+                TargetController.I.ActivateTarget();
+                break;
             case GraphAction.HISTORY:
                 historySlider.gameObject.SetActive(true);
                 historySlider.maxValue = headEditingHistory < maxHistoryCount ? headEditingHistory : maxHistoryCount - 1;
@@ -70,32 +69,34 @@ public class BubbleController : Singleton<BubbleController>
     //     // Detect user's voice, and input as an argument of GenerateBubble() ...
     // }
     public void OnReleasedVoiceInputButton() => GenerateBubble("");
-    public bool raycasting { get; set; }
-    void WhilePressingRaycastButton() => FocusOnBubble();
-
-    public void OnReleasedRaycastButton()
+    bool raycasting;
+    public void StartRaycasting()
     {
+        raycasting = true;
+    }
+    void WhileRaycasting() => FocusOnBubble();
+    public void EndRaycasting()
+    {
+        raycasting = false;
         if (current_focused_bubble)
         {
             current_focused_bubble.focused = false;
             if (editing)
             {
-                // When Selected Bubble to Connect.
+                // When Selected Bubble to Connect Node.
                 GenerateNode(current_selected_bubble, current_focused_bubble);
+                TargetController.I.DeactivateTarget(TargetController.I.current_focusing_target);
+                TargetController.I.ActivateTarget();
             }
             else
             {
                 // When Selected Bubble to Edit.
                 current_focused_bubble.selected = true;
                 current_selected_bubble = current_focused_bubble;
+                TargetController.I.SelectTarget(current_selected_bubble.gameObject);
 
                 // Enter Edit Mode.
-                generateButton.gameObject.SetActive(false);
-                selectButton.gameObject.SetActive(false);
-                historyButton.gameObject.SetActive(false);
-                editMenu.SetActive(true);
-                editing = true;
-                ChangeEditMode(0);
+                EnterEditMode();
             }
             current_focused_bubble = null;
         }
@@ -107,7 +108,15 @@ public class BubbleController : Singleton<BubbleController>
     bool editing = false;
     public enum BubbleEditMode { NONE, MOVE, CONNECT, DELETE }
     BubbleEditMode editMode;
-
+    void EnterEditMode()
+    {
+        editing = true;
+        generateButton.gameObject.SetActive(false);
+        selectButton.gameObject.SetActive(false);
+        historyButton.gameObject.SetActive(false);
+        editMenu.SetActive(true);
+        ChangeEditMode(0);
+    }
     public void ChangeEditMode(int mode_number)
     {
         BubbleEditMode old_mode = editMode;
@@ -116,14 +125,17 @@ public class BubbleController : Singleton<BubbleController>
         editMode = new_mode;
         OnEditModeValueChanged(old_mode, new_mode);
     }
-
     void OnEditModeValueChanged(BubbleEditMode old_mode, BubbleEditMode new_mode)
     {
         switch (old_mode)
         {
             case BubbleEditMode.NONE: raycastButton.interactable = false; break;
             case BubbleEditMode.MOVE: raycastButton.interactable = false; break;
-            case BubbleEditMode.CONNECT: raycastButton.interactable = true; break;
+            case BubbleEditMode.CONNECT:
+                raycastButton.interactable = true;
+                TargetController.I.DeactivateTarget(TargetController.I.current_ready_target);
+                TargetController.I.DeactivateTarget(TargetController.I.current_focusing_target);
+                break;
             case BubbleEditMode.DELETE: raycastButton.interactable = false; break;
         }
         switch (new_mode)
@@ -131,16 +143,18 @@ public class BubbleController : Singleton<BubbleController>
             case BubbleEditMode.NONE: raycastButton.interactable = false; break;
             case BubbleEditMode.MOVE:
                 raycastButton.interactable = false;
-                distanceFromDevice = Vector3.Distance(devicePosition, current_selected_bubble.transform.position);
+                distanceFromDevice = Vector3.Distance(DeviceInfo.I.transform.localPosition, current_selected_bubble.transform.position);
                 break;
-            case BubbleEditMode.CONNECT: raycastButton.interactable = true; break;
+            case BubbleEditMode.CONNECT:
+                raycastButton.interactable = true;
+                TargetController.I.ActivateTarget();
+                break;
             case BubbleEditMode.DELETE:
                 raycastButton.interactable = false;
                 DiscardBubble(current_selected_bubble);
                 break;
         }
     }
-
     void WhileEditing()
     {
         switch (editMode)
@@ -150,7 +164,6 @@ public class BubbleController : Singleton<BubbleController>
             case BubbleEditMode.DELETE: break;
         }
     }
-
     public void ExitEditMode(bool save)
     {
         editing = false;
@@ -171,6 +184,8 @@ public class BubbleController : Singleton<BubbleController>
         generateButton.gameObject.SetActive(true);
         selectButton.gameObject.SetActive(true);
         historyButton.gameObject.SetActive(true);
+
+        TargetController.I.DeactivateAllTargets();
 
         // Record 2.
         RecordHistory();
@@ -208,7 +223,8 @@ public class BubbleController : Singleton<BubbleController>
 
     void GenerateBubble(string input_text)
     {
-        Bubble new_bubble = Instantiate(bubblePrefab, devicePosition + deviceDirection * offset, Quaternion.identity, bubblesParent).GetComponent<Bubble>();
+        Transform device_trans = DeviceInfo.I.transform;
+        Bubble new_bubble = Instantiate(bubblePrefab, device_trans.localPosition + device_trans.forward * offset, Quaternion.identity, bubblesParent).GetComponent<Bubble>();
         new_bubble.Generate(idCounter, input_text);
         idCounter++;
         allBubbles.Add(new_bubble);
@@ -219,8 +235,9 @@ public class BubbleController : Singleton<BubbleController>
 
     void MoveBubble(Bubble bubble)
     {
+        Transform device_trans = DeviceInfo.I.transform;
         Vector3 current = bubble.transform.position;
-        Vector3 destination = devicePosition + deviceDirection * distanceFromDevice;
+        Vector3 destination = device_trans.localPosition + device_trans.forward * distanceFromDevice;
         Vector3 next = current + (destination - current) * smoothing;
         bubble.transform.position = next;
 
@@ -289,8 +306,9 @@ public class BubbleController : Singleton<BubbleController>
 
     void FocusOnBubble()
     {
+        Transform device_trans = DeviceInfo.I.transform;
         RaycastHit hit_result;
-        bool detected = Physics.Raycast(arCamera.transform.localPosition, arCamera.transform.forward, out hit_result, maxDistance, graphLayermask);
+        bool detected = Physics.Raycast(device_trans.localPosition, device_trans.forward, out hit_result, maxDistance, graphLayermask);
 
         // Bubble Detected.
         if (detected)
@@ -300,7 +318,7 @@ public class BubbleController : Singleton<BubbleController>
             // Focused on Same Bubble.
             if (current_focused_bubble == bubble) return;
 
-            // While Editing Mode.
+            // While Editing Mode. (= Connect Mode.)
             if (editing)
             {
                 // Your Self.
@@ -313,6 +331,7 @@ public class BubbleController : Singleton<BubbleController>
             if (current_focused_bubble) current_focused_bubble.focused = false;
             bubble.focused = true;
             current_focused_bubble = bubble;
+            TargetController.I.FocusTarget(bubble.gameObject);
         }
 
         // No Bubble Detected.
@@ -322,6 +341,7 @@ public class BubbleController : Singleton<BubbleController>
             {
                 current_focused_bubble.focused = false;
                 current_focused_bubble = null;
+                TargetController.I.ReadyTarget();
             }
         }
     }
@@ -409,7 +429,6 @@ public class BubbleController : Singleton<BubbleController>
 
         bubblesParent = transform.Find("Bubbles");
         nodesParent = transform.Find("Nodes");
-        arCamera = GameObject.FindGameObjectWithTag("MainCamera");
 
         historyButton.interactable = false;
         voiceInputButton.gameObject.SetActive(false);
@@ -420,7 +439,7 @@ public class BubbleController : Singleton<BubbleController>
 
     void Update()
     {
-        if (raycasting) WhilePressingRaycastButton();
+        if (raycasting) WhileRaycasting();
         if (editing) WhileEditing();
     }
 }

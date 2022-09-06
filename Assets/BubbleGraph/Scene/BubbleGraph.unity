@@ -258,6 +258,55 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 24680956}
   m_CullTransparentMesh: 1
+--- !u!1 &31591746
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 31591748}
+  - component: {fileID: 31591747}
+  m_Layer: 0
+  m_Name: Global Volume
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!114 &31591747
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 31591746}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IsGlobal: 1
+  priority: 0
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 11400000, guid: 487e714d2aa2348159157106f279f5fd, type: 2}
+--- !u!4 &31591748
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 31591746}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &167993884
 GameObject:
   m_ObjectHideFlags: 0
@@ -1827,6 +1876,60 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 812240004}
   m_CullTransparentMesh: 1
+--- !u!1 &929781922
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 929781924}
+  - component: {fileID: 929781923}
+  m_Layer: 0
+  m_Name: Target Controller
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &929781923
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 929781922}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7dedb7fbcb9ec474983fc2b62661926c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetPrefab: {fileID: 8988000302034338617, guid: a342a1c45786d40af8ca13ac00cca201, type: 3}
+  allTargets: []
+  current_ready_target: {fileID: 0}
+  current_focusing_target: {fileID: 0}
+  readyColor: {r: 0.69803923, g: 0.69803923, b: 0.69803923, a: 1}
+  focusColor: {r: 1, g: 0.3019608, b: 0, a: 1}
+  selectColor: {r: 0, g: 1, b: 0.3372549, a: 1}
+  moveDuration: 0.1
+  colorDuration: 0.1
+  offset: 3
+--- !u!4 &929781924
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 929781922}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1094994208
 GameObject:
   m_ObjectHideFlags: 0
@@ -3230,11 +3333,9 @@ MonoBehaviour:
   raycastButton: {fileID: 2014033360}
   editMenu: {fileID: 1843292033}
   historySlider: {fileID: 618586177}
-  offset: 0.5
+  offset: 0.7
   smoothing: 0.12
   maxHistoryCount: 10
-  currentEditingHistory: 0
-  headEditingHistory: 0
   tmp: {fileID: 812240006}
 --- !u!4 &1855592080
 Transform:
@@ -3268,6 +3369,7 @@ GameObject:
   - component: {fileID: 1876786175}
   - component: {fileID: 1876786174}
   - component: {fileID: 1876786179}
+  - component: {fileID: 1876786180}
   m_Layer: 0
   m_Name: AR Camera
   m_TagString: MainCamera
@@ -3346,7 +3448,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_FocusMode: -1
   m_LightEstimationMode: -1
-  m_AutoFocus: 1
+  m_AutoFocus: 0
   m_LightEstimation: 0
   m_FacingDirection: 1
 --- !u!114 &1876786176
@@ -3417,6 +3519,19 @@ MonoBehaviour:
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
+--- !u!114 &1876786180
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1876786172}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 456dd6368566a4f55aee916518af0406, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cam: {fileID: 0}
 --- !u!1 &1946470189
 GameObject:
   m_ObjectHideFlags: 0
@@ -3744,18 +3859,6 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 1855592079}
-          m_TargetAssemblyTypeName: BubbleController, Assembly-CSharp
-          m_MethodName: set_raycasting
-          m_Mode: 6
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 1
-          m_CallState: 2
         - m_Target: {fileID: 582158964}
           m_TargetAssemblyTypeName: UnityEngine.UI.Selectable, UnityEngine.UI
           m_MethodName: set_interactable
@@ -3767,23 +3870,23 @@ MonoBehaviour:
             m_FloatArgument: 0
             m_StringArgument: 
             m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 1855592079}
+          m_TargetAssemblyTypeName: BubbleController, Assembly-CSharp
+          m_MethodName: StartRaycasting
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 1
           m_CallState: 2
   - eventID: 3
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 1855592079}
-          m_TargetAssemblyTypeName: BubbleController, Assembly-CSharp
-          m_MethodName: set_raycasting
-          m_Mode: 6
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
         - m_Target: {fileID: 582158964}
           m_TargetAssemblyTypeName: UnityEngine.UI.Selectable, UnityEngine.UI
           m_MethodName: set_interactable
@@ -3798,7 +3901,7 @@ MonoBehaviour:
           m_CallState: 2
         - m_Target: {fileID: 1855592079}
           m_TargetAssemblyTypeName: BubbleController, Assembly-CSharp
-          m_MethodName: OnReleasedRaycastButton
+          m_MethodName: EndRaycasting
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
