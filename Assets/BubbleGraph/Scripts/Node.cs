@@ -14,6 +14,8 @@ public class Node : MonoBehaviour
     Existence existence = Existence.BEFORE_GENERATION;
     public Bubble startBubble { get; private set; }
     public Bubble endBubble { get; private set; }
+    public Color startColor { get; private set; }
+    public Color endColor { get; private set; }
 
     public void SetBubbles(Bubble start_bubble, Bubble end_bubble)
     {
@@ -30,14 +32,6 @@ public class Node : MonoBehaviour
 
 
 
-    void Awake()
-    {
-        line = GetComponent<LineRenderer>();
-        line.enabled = false;
-    }
-
-
-
     /// <summary> バブル同士を線で繋ぐ。</summary>
     public void DrawLineBetweenBubbles()
     {
@@ -47,6 +41,7 @@ public class Node : MonoBehaviour
         line.SetPositions(positions);
         line.startWidth = lineWidth;
         line.endWidth = lineWidth;
+        UpdateColor(startBubble.bubbleColor, endBubble.bubbleColor);
         line.enabled = true;
         // 
         // ノード生成演出。
@@ -61,6 +56,15 @@ public class Node : MonoBehaviour
         line.SetPositions(new_positions);
     }
 
+    // If input is null, color will stay the same.
+    public void UpdateColor(Color? start_color = null, Color? end_color = null)
+    {
+        startColor = start_color.HasValue ? (Color)start_color : startColor;
+        endColor = end_color.HasValue ? (Color)end_color : endColor;
+        if (start_color.HasValue) line.material.SetColor("_StartColor", startColor);
+        if (end_color.HasValue) line.material.SetColor("_EndColor", endColor);
+    }
+
 
 
     /// <summary> ノードのセットアップを行う。Instantiateの直後に必ず呼ぶこと！！ </summary>
@@ -70,6 +74,8 @@ public class Node : MonoBehaviour
     /// <param name="draw_immediate"> 線をノード生成時に引く。</param>
     public void Generate(Bubble start_bubble, Bubble end_bubble, float line_width = 0.005f, bool draw_immediate = true)
     {
+        line = GetComponent<LineRenderer>();
+        line.enabled = false;
         existence = Existence.EXISTS;
         SetBubbles(start_bubble, end_bubble);
         lineWidth = line_width;
@@ -127,7 +133,7 @@ public class Node : MonoBehaviour
     /// <summary> ノードの状態をヒストリに記録する。</summary>
     public void Record(int current_editing_history)
     {
-        NodeState new_state = new NodeState(startBubble, endBubble, existence);
+        NodeState new_state = new NodeState(startBubble, endBubble, existence, startColor, endColor);
 
         // Branched from past history.
         if (nodeHistory.ContainsKey(current_editing_history))
@@ -178,7 +184,12 @@ public class Node : MonoBehaviour
         // Update parameters.
         startBubble = new_state.startBubble;
         endBubble = new_state.endBubble;
-        UpdatePosition();
+        // This node might be already deleted in this history, which does not have start[end]bubble.
+        if (startBubble && endBubble)
+        {
+            UpdatePosition();
+            UpdateColor(new_state.startColor, new_state.endColor);
+        }
 
         if (new_state.existence == existence) return;
 
@@ -202,10 +213,13 @@ public struct NodeState
     public Bubble startBubble;
     public Bubble endBubble;
     public Existence existence;
-    public NodeState(Bubble startBubble, Bubble endBubble, Existence existence)
+    public Color startColor, endColor;
+    public NodeState(Bubble startBubble, Bubble endBubble, Existence existence, Color startColor, Color endColor)
     {
         this.startBubble = startBubble;
         this.endBubble = endBubble;
         this.existence = existence;
+        this.startColor = startColor;
+        this.endColor = endColor;
     }
 }

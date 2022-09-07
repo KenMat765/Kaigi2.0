@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
+using DG.Tweening;
 
 public class BubbleController : Singleton<BubbleController>
 {
@@ -20,6 +21,7 @@ public class BubbleController : Singleton<BubbleController>
     public List<Bubble> deletedBubblesCache { get; set; } = new List<Bubble>();
     public List<Node> deletedNodesCache { get; set; } = new List<Node>();
     Transform bubblesParent, nodesParent;
+    [SerializeField] List<Color> colors = new List<Color>();
 
 
 
@@ -68,7 +70,12 @@ public class BubbleController : Singleton<BubbleController>
     // {
     //     // Detect user's voice, and input as an argument of GenerateBubble() ...
     // }
-    public void OnReleasedVoiceInputButton() => GenerateBubble("");
+
+    // 
+    // 
+    // 
+    public void OnReleasedVoiceInputButton() => GenerateBubble("Debug");
+
     bool raycasting;
     public void StartRaycasting()
     {
@@ -84,9 +91,11 @@ public class BubbleController : Singleton<BubbleController>
             if (editing)
             {
                 // When Selected Bubble to Connect Node.
+                ignoreRecord = false;
                 GenerateNode(current_selected_bubble, current_focused_bubble);
                 TargetController.I.DeactivateTarget(TargetController.I.current_focusing_target);
                 TargetController.I.ActivateTarget();
+                ZoomBubbleText(current_focused_bubble, false);
             }
             else
             {
@@ -106,7 +115,7 @@ public class BubbleController : Singleton<BubbleController>
 
     // Edit Mode.
     bool editing = false;
-    public enum BubbleEditMode { NONE, MOVE, CONNECT, DELETE }
+    public enum BubbleEditMode { NONE, MOVE, CONNECT, DELETE, COLOR }
     BubbleEditMode editMode;
     void EnterEditMode()
     {
@@ -137,11 +146,16 @@ public class BubbleController : Singleton<BubbleController>
                 TargetController.I.DeactivateTarget(TargetController.I.current_focusing_target);
                 break;
             case BubbleEditMode.DELETE: raycastButton.interactable = false; break;
+            case BubbleEditMode.COLOR:
+                raycastButton.interactable = false;
+                colorPallete.SetActive(false);
+                break;
         }
         switch (new_mode)
         {
             case BubbleEditMode.NONE: raycastButton.interactable = false; break;
             case BubbleEditMode.MOVE:
+                ignoreRecord = false;
                 raycastButton.interactable = false;
                 distanceFromDevice = Vector3.Distance(DeviceInfo.I.transform.localPosition, current_selected_bubble.transform.position);
                 break;
@@ -150,8 +164,14 @@ public class BubbleController : Singleton<BubbleController>
                 TargetController.I.ActivateTarget();
                 break;
             case BubbleEditMode.DELETE:
+                ignoreRecord = false;
                 raycastButton.interactable = false;
                 DiscardBubble(current_selected_bubble);
+                break;
+            case BubbleEditMode.COLOR:
+                ignoreRecord = false;
+                raycastButton.interactable = false;
+                colorPallete.SetActive(true);
                 break;
         }
     }
@@ -170,6 +190,7 @@ public class BubbleController : Singleton<BubbleController>
 
         if (current_selected_bubble)
         {
+            ZoomBubbleText(current_selected_bubble, false);
             current_selected_bubble.selected = false;
             current_selected_bubble = null;
         }
@@ -181,6 +202,7 @@ public class BubbleController : Singleton<BubbleController>
         raycastButton.gameObject.SetActive(false);
         if (!raycastButton.interactable) raycastButton.interactable = true;
         editMenu.SetActive(false);
+        colorPallete.SetActive(false);
         generateButton.gameObject.SetActive(true);
         selectButton.gameObject.SetActive(true);
         historyButton.gameObject.SetActive(true);
@@ -209,6 +231,7 @@ public class BubbleController : Singleton<BubbleController>
     [SerializeField] Button raycastButton;
     [SerializeField] GameObject editMenu;
     [SerializeField] Slider historySlider;
+    [SerializeField] GameObject colorPallete;
 
 
 
@@ -216,6 +239,9 @@ public class BubbleController : Singleton<BubbleController>
     [Header("Bubble")]
     public float offset = 0.5f;
     public float smoothing = 0.9f;
+    public float zoomScale = 3;
+    public float zoomOffset = 0.25f;
+    public float zoomDuration = 0.2f;
     int idCounter = 0;
     Bubble current_focused_bubble;
     Bubble current_selected_bubble;
@@ -225,11 +251,12 @@ public class BubbleController : Singleton<BubbleController>
     {
         Transform device_trans = DeviceInfo.I.transform;
         Bubble new_bubble = Instantiate(bubblePrefab, device_trans.localPosition + device_trans.forward * offset, Quaternion.identity, bubblesParent).GetComponent<Bubble>();
-        new_bubble.Generate(idCounter, input_text);
+        new_bubble.Generate(idCounter, input_text, colors[0]);
         idCounter++;
         allBubbles.Add(new_bubble);
 
         // Record 1.
+        ignoreRecord = false;
         RecordHistory();
     }
 
@@ -328,10 +355,15 @@ public class BubbleController : Singleton<BubbleController>
             }
 
             // Focused on New Bubble.
-            if (current_focused_bubble) current_focused_bubble.focused = false;
+            if (current_focused_bubble)
+            {
+                ZoomBubbleText(current_focused_bubble, false);
+                current_focused_bubble.focused = false;
+            }
             bubble.focused = true;
             current_focused_bubble = bubble;
             TargetController.I.FocusTarget(bubble.gameObject);
+            ZoomBubbleText(bubble, true);
         }
 
         // No Bubble Detected.
@@ -339,10 +371,46 @@ public class BubbleController : Singleton<BubbleController>
         {
             if (current_focused_bubble)
             {
+                ZoomBubbleText(current_focused_bubble, false);
                 current_focused_bubble.focused = false;
                 current_focused_bubble = null;
                 TargetController.I.ReadyTarget();
             }
+        }
+    }
+
+    // Called from color pallete buttons.
+    public void ColorCurrentSelectedBubble(int color_number)
+    {
+        if (!current_selected_bubble)
+        {
+            Debug.LogError("<color=green>バブルが選択されていません!!</color>");
+            return;
+        }
+        if (color_number >= colors.Count)
+        {
+            Debug.LogError("<color=green>colors.Countを超える数値が入力されました!!</color>");
+            return;
+        }
+        Color color = colors[color_number];
+        current_selected_bubble.Color(color);
+    }
+
+    public void ZoomBubbleText(Bubble bubble, bool zoom)
+    {
+        if (zoom)
+        {
+            Sequence seq = DOTween.Sequence();
+            seq.Append(bubble.canvasRect.DOScale(zoomScale, zoomDuration));
+            seq.Join(bubble.canvasRect.DOLocalMoveY(zoomOffset, zoomDuration));
+            seq.Play();
+        }
+        else
+        {
+            Sequence seq = DOTween.Sequence();
+            seq.Append(bubble.canvasRect.DOScale(1, zoomDuration));
+            seq.Join(bubble.canvasRect.DOLocalMoveY(0, zoomDuration));
+            seq.Play();
         }
     }
 
@@ -375,11 +443,17 @@ public class BubbleController : Singleton<BubbleController>
     // Editing History is a history which user is editing now, and not recorded yet.
     int currentEditingHistory;
     int headEditingHistory;
-
     int tailEditingHistory { get { return headEditingHistory - maxHistoryCount + 1 < 0 ? 0 : headEditingHistory - maxHistoryCount + 1; } }
+
+    // Turn this off before recording. Otherwise, recording will be ignored.
+    bool ignoreRecord = true;
 
     void RecordHistory()
     {
+        // This is necessary in order to prevent from recording unnecessary history.
+        if (ignoreRecord) return;
+        ignoreRecord = true;
+
         foreach (Bubble bubble in allBubbles) bubble.Record(currentEditingHistory);
         foreach (Node node in allNodes) node.Record(currentEditingHistory);
 
@@ -435,6 +509,7 @@ public class BubbleController : Singleton<BubbleController>
         raycastButton.gameObject.SetActive(false);
         historySlider.gameObject.SetActive(false);
         editMenu.SetActive(false);
+        colorPallete.SetActive(false);
     }
 
     void Update()

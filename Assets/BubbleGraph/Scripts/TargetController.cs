@@ -9,17 +9,16 @@ public class TargetController : Singleton<TargetController>
 
     [SerializeField] GameObject targetPrefab;
 
-    // 
-    // 
-    // 
-    [SerializeField] List<Target> allTargets = new List<Target>();
-    public Target current_ready_target; //{ get; private set; }
-    public Target current_focusing_target; //{ get; private set; }
+    List<Target> allTargets = new List<Target>();
+    public Target current_ready_target { get; private set; }
+    public Target current_focusing_target { get; private set; }
     public List<Target> current_selecting_targets { get; private set; } = new List<Target>();
 
     [SerializeField] Color readyColor, focusColor, selectColor;
     [SerializeField] float moveDuration, colorDuration;
     [SerializeField] float offset;
+
+    Sequence seq;
 
     Target GetTarget()
     {
@@ -54,7 +53,8 @@ public class TargetController : Singleton<TargetController>
     {
         Target target = GetTarget();
         Transform device_trans = DeviceInfo.I.transform;
-        Sequence seq = DOTween.Sequence();
+
+        seq = DOTween.Sequence();
         seq.OnStart(() =>
         {
             target.transform.SetParent(device_trans, false);
@@ -74,7 +74,9 @@ public class TargetController : Singleton<TargetController>
     {
         if (!current_focusing_target) return;
         Transform device_trans = DeviceInfo.I.transform;
-        Sequence seq = DOTween.Sequence();
+
+        if (seq.IsActive() && seq.IsPlaying()) seq.Kill(true);
+        seq = DOTween.Sequence();
         seq.OnStart(() => current_focusing_target.transform.SetParent(device_trans, false));
         seq.Append(current_focusing_target.transform.DOLocalMove(new Vector3(0, 0, offset), moveDuration));
         seq.Join(current_focusing_target.image.DOColor(readyColor, colorDuration));
@@ -90,17 +92,21 @@ public class TargetController : Singleton<TargetController>
 
     public void FocusTarget(GameObject obj)
     {
-        if (!current_ready_target) return;
-        Target crt = current_ready_target;
-        Sequence seq = DOTween.Sequence();
-        seq.OnStart(() => crt.transform.SetParent(obj.transform, true));
-        seq.Append(crt.transform.DOLocalMove(Vector3.zero, moveDuration));
-        seq.Join(crt.image.DOColor(focusColor, colorDuration));
+        Target target;
+        if (current_ready_target) target = current_ready_target;
+        else if (current_focusing_target) target = current_focusing_target;
+        else return;
+
+        if (seq.IsActive() && seq.IsPlaying()) seq.Kill(false);
+        seq = DOTween.Sequence();
+        seq.OnStart(() => target.transform.SetParent(obj.transform, true));
+        seq.Append(target.transform.DOLocalMove(Vector3.zero, moveDuration));
+        seq.Join(target.image.DOColor(focusColor, colorDuration));
         seq.OnComplete(() =>
         {
-            crt.ChangeTargetState(TargetState.FOCUSING);
-            crt.focusingObject = obj;
-            current_focusing_target = crt;
+            target.ChangeTargetState(TargetState.FOCUSING);
+            target.focusingObject = obj;
+            current_focusing_target = target;
             current_ready_target = null;
         });
         seq.Play();
@@ -110,7 +116,9 @@ public class TargetController : Singleton<TargetController>
     {
         if (!current_focusing_target) return;
         Target cft = current_focusing_target;
-        Sequence seq = DOTween.Sequence();
+
+        if (seq.IsActive() && seq.IsPlaying()) seq.Kill(true);
+        seq = DOTween.Sequence();
         seq.Append(cft.image.DOColor(selectColor, colorDuration));
         seq.OnComplete(() =>
         {
@@ -135,10 +143,7 @@ public class TargetController : Singleton<TargetController>
     public void DeactivateAllTargets()
     {
         if (allTargets.Count == 0) return;
-        foreach (Target target in allTargets)
-        {
-            DeactivateTarget(target);
-        }
+        foreach (Target target in allTargets) DeactivateTarget(target);
     }
 
     public void VisualizeTarget(Target target, bool visible)
