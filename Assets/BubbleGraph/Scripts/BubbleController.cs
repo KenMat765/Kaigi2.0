@@ -102,6 +102,12 @@ public class BubbleController : Singleton<BubbleController>
                 // When Selected Bubble to Edit.
                 current_focused_bubble.selected = true;
                 current_selected_bubble = current_focused_bubble;
+
+                // 
+                // 
+                // 複数選択モードでは処理を変える必要がある。
+                colorButtonImage.color = current_selected_bubble.bubbleColor;
+
                 TargetController.I.SelectTarget(current_selected_bubble.gameObject);
 
                 // Enter Edit Mode.
@@ -232,6 +238,7 @@ public class BubbleController : Singleton<BubbleController>
     [SerializeField] GameObject editMenu;
     [SerializeField] Slider historySlider;
     [SerializeField] GameObject colorPallete;
+    Image colorButtonImage;
 
 
 
@@ -394,6 +401,7 @@ public class BubbleController : Singleton<BubbleController>
         }
         Color color = colors[color_number];
         current_selected_bubble.Color(color);
+        colorButtonImage.color = color;
     }
 
     public void ZoomBubbleText(Bubble bubble, bool zoom)
@@ -510,6 +518,13 @@ public class BubbleController : Singleton<BubbleController>
         historySlider.gameObject.SetActive(false);
         editMenu.SetActive(false);
         colorPallete.SetActive(false);
+
+        colorButtonImage = editMenu.transform.Find("ColorButton").GetComponent<Image>();
+
+        for (int k = 0; k < colorPallete.transform.childCount; k++)
+        {
+            colorPallete.transform.GetChild(k).GetComponent<Image>().color = colors[k];
+        }
     }
 
     void Update()
