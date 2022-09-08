@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
 using System;
 using DG.Tweening;
@@ -21,7 +20,7 @@ public class BubbleController : Singleton<BubbleController>
     public List<Bubble> deletedBubblesCache { get; set; } = new List<Bubble>();
     public List<Node> deletedNodesCache { get; set; } = new List<Node>();
     Transform bubblesParent, nodesParent;
-    [SerializeField] List<Color> colors = new List<Color>();
+    public List<Color> colors = new List<Color>();
 
 
 
@@ -43,25 +42,28 @@ public class BubbleController : Singleton<BubbleController>
         switch (old_action)
         {
             case GraphAction.NONE: break;
-            case GraphAction.GENERATE: voiceInputButton.gameObject.SetActive(false); break;
-            case GraphAction.SELECT:
-                raycastButton.gameObject.SetActive(false);
-                TargetController.I.DeactivateAllTargets();
-                break;
-            case GraphAction.HISTORY: historySlider.gameObject.SetActive(false); break;
+            case GraphAction.GENERATE: break;
+            case GraphAction.SELECT: TargetController.I.DeactivateAllTargets(); break;
+            case GraphAction.HISTORY: break;
         }
         switch (new_action)
         {
-            case GraphAction.NONE: break;
-            case GraphAction.GENERATE: voiceInputButton.gameObject.SetActive(true); break;
+            case GraphAction.NONE:
+                IconController.I.ShowTriggerIcons(-1);
+                IconController.I.MoveSelectRing(-1);
+                break;
+            case GraphAction.GENERATE:
+                IconController.I.ShowTriggerIcons(0);
+                IconController.I.MoveSelectRing(0);
+                break;
             case GraphAction.SELECT:
-                raycastButton.gameObject.SetActive(true);
+                IconController.I.ShowTriggerIcons(1);
+                IconController.I.MoveSelectRing(1);
                 TargetController.I.ActivateTarget();
                 break;
             case GraphAction.HISTORY:
-                historySlider.gameObject.SetActive(true);
-                historySlider.maxValue = headEditingHistory < maxHistoryCount ? headEditingHistory : maxHistoryCount - 1;
-                historySlider.value = currentEditingHistory - tailEditingHistory;
+                IconController.I.ShowTriggerIcons(2);
+                IconController.I.MoveSelectRing(2);
                 break;
         }
     }
@@ -106,7 +108,7 @@ public class BubbleController : Singleton<BubbleController>
                 // 
                 // 
                 // 複数選択モードでは処理を変える必要がある。
-                colorButtonImage.color = current_selected_bubble.bubbleColor;
+                IconController.I.ColorColoringButton(current_selected_bubble.bubbleColor);
 
                 TargetController.I.SelectTarget(current_selected_bubble.gameObject);
 
@@ -126,10 +128,8 @@ public class BubbleController : Singleton<BubbleController>
     void EnterEditMode()
     {
         editing = true;
-        generateButton.gameObject.SetActive(false);
-        selectButton.gameObject.SetActive(false);
-        historyButton.gameObject.SetActive(false);
-        editMenu.SetActive(true);
+        IconController.I.ShowGraphActionIcons(false);
+        IconController.I.ShowEditMenuIcons(true);
         ChangeEditMode(0);
     }
     public void ChangeEditMode(int mode_number)
@@ -142,42 +142,42 @@ public class BubbleController : Singleton<BubbleController>
     }
     void OnEditModeValueChanged(BubbleEditMode old_mode, BubbleEditMode new_mode)
     {
+        IconController.I.InteractRaycastButton(false);
         switch (old_mode)
         {
-            case BubbleEditMode.NONE: raycastButton.interactable = false; break;
-            case BubbleEditMode.MOVE: raycastButton.interactable = false; break;
+            case BubbleEditMode.NONE: break;
+            case BubbleEditMode.MOVE: break;
             case BubbleEditMode.CONNECT:
-                raycastButton.interactable = true;
                 TargetController.I.DeactivateTarget(TargetController.I.current_ready_target);
                 TargetController.I.DeactivateTarget(TargetController.I.current_focusing_target);
                 break;
-            case BubbleEditMode.DELETE: raycastButton.interactable = false; break;
-            case BubbleEditMode.COLOR:
-                raycastButton.interactable = false;
-                colorPallete.SetActive(false);
-                break;
+            case BubbleEditMode.DELETE: break;
+            case BubbleEditMode.COLOR: IconController.I.ShowColorPallete(false); break;
         }
         switch (new_mode)
         {
-            case BubbleEditMode.NONE: raycastButton.interactable = false; break;
+            case BubbleEditMode.NONE:
+                IconController.I.MoveSelectRing(-1);
+                break;
             case BubbleEditMode.MOVE:
                 ignoreRecord = false;
-                raycastButton.interactable = false;
                 distanceFromDevice = Vector3.Distance(DeviceInfo.I.transform.localPosition, current_selected_bubble.transform.position);
+                IconController.I.MoveSelectRing(3);
                 break;
             case BubbleEditMode.CONNECT:
-                raycastButton.interactable = true;
+                IconController.I.InteractRaycastButton(true);
+                IconController.I.MoveSelectRing(4);
                 TargetController.I.ActivateTarget();
                 break;
             case BubbleEditMode.DELETE:
                 ignoreRecord = false;
-                raycastButton.interactable = false;
+                IconController.I.MoveSelectRing(6);
                 DiscardBubble(current_selected_bubble);
                 break;
             case BubbleEditMode.COLOR:
                 ignoreRecord = false;
-                raycastButton.interactable = false;
-                colorPallete.SetActive(true);
+                IconController.I.ShowColorPallete(true);
+                IconController.I.MoveSelectRing(5);
                 break;
         }
     }
@@ -205,13 +205,12 @@ public class BubbleController : Singleton<BubbleController>
         graphAction = GraphAction.NONE;
         editMode = BubbleEditMode.NONE;
 
-        raycastButton.gameObject.SetActive(false);
-        if (!raycastButton.interactable) raycastButton.interactable = true;
-        editMenu.SetActive(false);
-        colorPallete.SetActive(false);
-        generateButton.gameObject.SetActive(true);
-        selectButton.gameObject.SetActive(true);
-        historyButton.gameObject.SetActive(true);
+        IconController.I.ShowTriggerIcons(-1);
+        IconController.I.InteractRaycastButton(true);
+        IconController.I.ShowEditMenuIcons(false);
+        IconController.I.ShowColorPallete(false);
+        IconController.I.ShowGraphActionIcons(true);
+        IconController.I.MoveSelectRing(-1);
 
         TargetController.I.DeactivateAllTargets();
 
@@ -225,20 +224,6 @@ public class BubbleController : Singleton<BubbleController>
     [Header("Raycast")]
     public float maxDistance;
     [SerializeField] LayerMask graphLayermask;
-
-
-
-    // UI.
-    [Header("UI")]
-    [SerializeField] Button generateButton;
-    [SerializeField] Button selectButton;
-    [SerializeField] Button historyButton;
-    [SerializeField] Button voiceInputButton;
-    [SerializeField] Button raycastButton;
-    [SerializeField] GameObject editMenu;
-    [SerializeField] Slider historySlider;
-    [SerializeField] GameObject colorPallete;
-    Image colorButtonImage;
 
 
 
@@ -401,7 +386,7 @@ public class BubbleController : Singleton<BubbleController>
         }
         Color color = colors[color_number];
         current_selected_bubble.Color(color);
-        colorButtonImage.color = color;
+        IconController.I.ColorColoringButton(color);
     }
 
     public void ZoomBubbleText(Bubble bubble, bool zoom)
@@ -446,12 +431,12 @@ public class BubbleController : Singleton<BubbleController>
 
     // History.
     [Header("History")]
-    [SerializeField] int maxHistoryCount = 10;
+    public int maxHistoryCount = 10;
 
     // Editing History is a history which user is editing now, and not recorded yet.
-    int currentEditingHistory;
-    int headEditingHistory;
-    int tailEditingHistory { get { return headEditingHistory - maxHistoryCount + 1 < 0 ? 0 : headEditingHistory - maxHistoryCount + 1; } }
+    public int currentEditingHistory { get; private set; }
+    public int headEditingHistory { get; private set; }
+    public int tailEditingHistory { get { return headEditingHistory - maxHistoryCount + 1 < 0 ? 0 : headEditingHistory - maxHistoryCount + 1; } }
 
     // Turn this off before recording. Otherwise, recording will be ignored.
     bool ignoreRecord = true;
@@ -475,7 +460,7 @@ public class BubbleController : Singleton<BubbleController>
         headEditingHistory = currentEditingHistory;
 
         // Enable history editing when history is recorded.
-        if (!historyButton.interactable) historyButton.interactable = true;
+        IconController.I.InteractHistoryButton(true);
     }
 
     void PlayBackHistory(int editing_history)
@@ -487,7 +472,7 @@ public class BubbleController : Singleton<BubbleController>
 
     public void OnHistorySliderChanged()
     {
-        int editing_history = tailEditingHistory + (int)historySlider.value;
+        int editing_history = tailEditingHistory + IconController.I.historySliderValue;
         editing_history = Mathf.Clamp(editing_history, Mathf.Max(tailEditingHistory, 0), headEditingHistory);
 
         if (editing_history == currentEditingHistory) return;
@@ -511,20 +496,6 @@ public class BubbleController : Singleton<BubbleController>
 
         bubblesParent = transform.Find("Bubbles");
         nodesParent = transform.Find("Nodes");
-
-        historyButton.interactable = false;
-        voiceInputButton.gameObject.SetActive(false);
-        raycastButton.gameObject.SetActive(false);
-        historySlider.gameObject.SetActive(false);
-        editMenu.SetActive(false);
-        colorPallete.SetActive(false);
-
-        colorButtonImage = editMenu.transform.Find("ColorButton").GetComponent<Image>();
-
-        for (int k = 0; k < colorPallete.transform.childCount; k++)
-        {
-            colorPallete.transform.GetChild(k).GetComponent<Image>().color = colors[k];
-        }
     }
 
     void Update()
