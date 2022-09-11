@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using System.Linq;
+using Utilities.ScreenCanvasExtention;
 
 public class IconController : Singleton<IconController>
 {
@@ -122,13 +123,13 @@ public class IconController : Singleton<IconController>
         selectRing.localScale = size;
         switch (icon_number)
         {
-            case 0: selectRing.position = graphActions.position + new Vector3(-250, 0, 0); break;
+            case 0: selectRing.position = graphActions.position + new Vector3(-250, 0, 0).RescaleCanvas2Screen(); break;
             case 1: selectRing.position = graphActions.position; break;
-            case 2: selectRing.position = graphActions.position + new Vector3(250, 0, 0); break;
-            case 3: selectRing.position = editMenu.position + new Vector3(0, 300, 0); break;
-            case 4: selectRing.position = editMenu.position + new Vector3(0, 150, 0); break;
+            case 2: selectRing.position = graphActions.position + new Vector3(250, 0, 0).RescaleCanvas2Screen(); break;
+            case 3: selectRing.position = editMenu.position + new Vector3(0, 300, 0).RescaleCanvas2Screen(); break;
+            case 4: selectRing.position = editMenu.position + new Vector3(0, 150, 0).RescaleCanvas2Screen(); break;
             case 5: selectRing.position = editMenu.position; break;
-            case 6: selectRing.position = editMenu.position + new Vector3(0, -150, 0); break;
+            case 6: selectRing.position = editMenu.position + new Vector3(0, -150, 0).RescaleCanvas2Screen(); break;
             default: selectRing.gameObject.SetActive(false); break;
         }
     }
