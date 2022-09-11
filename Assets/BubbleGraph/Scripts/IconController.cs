@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 using System.Linq;
 using Utilities.ScreenCanvasExtention;
+using TMPro;
 
 public class IconController : Singleton<IconController>
 {
@@ -27,6 +28,10 @@ public class IconController : Singleton<IconController>
     RectTransform[] colorButtonRects;
 
     [SerializeField] RectTransform selectRing;
+
+    [SerializeField] GameObject reloc;
+    TextMeshProUGUI relocStateText;
+    TextMeshProUGUI relocStartText;
 
 
 
@@ -134,6 +139,15 @@ public class IconController : Singleton<IconController>
         }
     }
 
+    void OnStartReloc() => relocStartText.text = "Stop";
+    void OnStopReloc() => relocStartText.text = "Start";
+    void WhileRelocalizing(float score) => relocStateText.text = $"Score : {(int)(score * 100)}";
+    void OnRelocalized()
+    {
+        reloc.SetActive(false);
+        ShowGraphActionIcons(true);
+    }
+
 
 
     protected override void Awake()
@@ -173,10 +187,18 @@ public class IconController : Singleton<IconController>
             colorPallete.transform.GetComponentsInChildren<Image>()[k].color = BubbleController.I.colors[k];
         }
 
-        InteractHistoryButton(false);
+        relocStateText = reloc.transform.Find("State/Text").GetComponent<TextMeshProUGUI>();
+        relocStartText = reloc.transform.Find("StartButton/Text").GetComponent<TextMeshProUGUI>();
+        RelocManager.I.onStartReloc += OnStartReloc;
+        RelocManager.I.onStopReloc += OnStopReloc;
+        RelocManager.I.onScoreUpdated += WhileRelocalizing;
+        RelocManager.I.onRelocalized += OnRelocalized;
+
+        ShowGraphActionIcons(false);
         ShowTriggerIcons(-1);
         ShowEditMenuIcons(false);
         ShowColorPallete(false);
+        InteractHistoryButton(false);
         MoveSelectRing(-1);
     }
 }

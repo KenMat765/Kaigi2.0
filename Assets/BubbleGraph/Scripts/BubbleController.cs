@@ -161,7 +161,7 @@ public class BubbleController : Singleton<BubbleController>
                 break;
             case BubbleEditMode.MOVE:
                 ignoreRecord = false;
-                distanceFromDevice = Vector3.Distance(DeviceInfo.I.transform.localPosition, current_selected_bubble.transform.position);
+                distanceFromDevice = Vector3.Distance(DeviceInfo.I.transform.position, current_selected_bubble.transform.position);
                 IconController.I.MoveSelectRing(3);
                 break;
             case BubbleEditMode.CONNECT:
@@ -170,7 +170,6 @@ public class BubbleController : Singleton<BubbleController>
                 TargetController.I.ActivateTarget();
                 break;
             case BubbleEditMode.DELETE:
-                ignoreRecord = false;
                 IconController.I.MoveSelectRing(6);
                 DiscardBubble(current_selected_bubble);
                 break;
@@ -242,7 +241,7 @@ public class BubbleController : Singleton<BubbleController>
     void GenerateBubble(string input_text)
     {
         Transform device_trans = DeviceInfo.I.transform;
-        Bubble new_bubble = Instantiate(bubblePrefab, device_trans.localPosition + device_trans.forward * offset, Quaternion.identity, bubblesParent).GetComponent<Bubble>();
+        Bubble new_bubble = Instantiate(bubblePrefab, device_trans.position + device_trans.forward * offset, Quaternion.identity, bubblesParent).GetComponent<Bubble>();
         new_bubble.Generate(idCounter, input_text, colors[0]);
         idCounter++;
         allBubbles.Add(new_bubble);
@@ -256,7 +255,7 @@ public class BubbleController : Singleton<BubbleController>
     {
         Transform device_trans = DeviceInfo.I.transform;
         Vector3 current = bubble.transform.position;
-        Vector3 destination = device_trans.localPosition + device_trans.forward * distanceFromDevice;
+        Vector3 destination = device_trans.position + device_trans.forward * distanceFromDevice;
         Vector3 next = current + (destination - current) * smoothing;
         bubble.transform.position = next;
 
@@ -276,6 +275,7 @@ public class BubbleController : Singleton<BubbleController>
         Action on_yes = () =>
         {
             bubble.Discard();
+            ignoreRecord = false;
             ExitEditMode(true);
         };
 
@@ -327,7 +327,7 @@ public class BubbleController : Singleton<BubbleController>
     {
         Transform device_trans = DeviceInfo.I.transform;
         RaycastHit hit_result;
-        bool detected = Physics.Raycast(device_trans.localPosition, device_trans.forward, out hit_result, maxDistance, graphLayermask);
+        bool detected = Physics.Raycast(device_trans.position, device_trans.forward, out hit_result, maxDistance, graphLayermask);
 
         // Bubble Detected.
         if (detected)
@@ -479,14 +479,6 @@ public class BubbleController : Singleton<BubbleController>
 
         PlayBackHistory(editing_history);
     }
-
-
-
-    // 
-    // 
-    // 
-    [Header("For Debug")]
-    [SerializeField] TextMeshProUGUI tmp;
 
 
 
