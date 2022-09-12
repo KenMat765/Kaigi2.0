@@ -139,7 +139,11 @@ public class IconController : Singleton<IconController>
         }
     }
 
-    void OnStartReloc() => relocStartText.text = "Stop";
+    void OnStartReloc()
+    {
+        relocStateText.text = "Score : 0";
+        relocStartText.text = "Stop";
+    }
     void OnStopReloc() => relocStartText.text = "Start";
     void WhileRelocalizing(float score) => relocStateText.text = $"Score : {(int)(score * 100)}";
     void OnRelocalized()
