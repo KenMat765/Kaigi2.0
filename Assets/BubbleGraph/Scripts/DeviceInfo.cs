@@ -5,7 +5,7 @@ using UnityEngine;
 public class DeviceInfo : Singleton<DeviceInfo>
 {
     protected override bool dont_destroy_on_load { get; set; } = false;
-    public Camera cam;
+    public Camera cam { get; private set; }
 
     protected override void Awake()
     {

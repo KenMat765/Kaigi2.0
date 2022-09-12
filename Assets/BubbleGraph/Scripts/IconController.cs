@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using System.Linq;
+using Utilities.ScreenCanvasExtention;
+using TMPro;
 
 public class IconController : Singleton<IconController>
 {
@@ -26,6 +28,10 @@ public class IconController : Singleton<IconController>
     RectTransform[] colorButtonRects;
 
     [SerializeField] RectTransform selectRing;
+
+    [SerializeField] GameObject reloc;
+    TextMeshProUGUI relocStateText;
+    TextMeshProUGUI relocStartText;
 
 
 
@@ -122,15 +128,28 @@ public class IconController : Singleton<IconController>
         selectRing.localScale = size;
         switch (icon_number)
         {
-            case 0: selectRing.position = graphActions.position + new Vector3(-250, 0, 0); break;
+            case 0: selectRing.position = graphActions.position + new Vector3(-250, 0, 0).RescaleCanvas2Screen(); break;
             case 1: selectRing.position = graphActions.position; break;
-            case 2: selectRing.position = graphActions.position + new Vector3(250, 0, 0); break;
-            case 3: selectRing.position = editMenu.position + new Vector3(0, 300, 0); break;
-            case 4: selectRing.position = editMenu.position + new Vector3(0, 150, 0); break;
+            case 2: selectRing.position = graphActions.position + new Vector3(250, 0, 0).RescaleCanvas2Screen(); break;
+            case 3: selectRing.position = editMenu.position + new Vector3(0, 300, 0).RescaleCanvas2Screen(); break;
+            case 4: selectRing.position = editMenu.position + new Vector3(0, 150, 0).RescaleCanvas2Screen(); break;
             case 5: selectRing.position = editMenu.position; break;
-            case 6: selectRing.position = editMenu.position + new Vector3(0, -150, 0); break;
+            case 6: selectRing.position = editMenu.position + new Vector3(0, -150, 0).RescaleCanvas2Screen(); break;
             default: selectRing.gameObject.SetActive(false); break;
         }
+    }
+
+    void OnStartReloc()
+    {
+        relocStateText.text = "Score : 0";
+        relocStartText.text = "Stop";
+    }
+    void OnStopReloc() => relocStartText.text = "Start";
+    void WhileRelocalizing(float score) => relocStateText.text = $"Score : {(int)(score * 100)}";
+    void OnRelocalized()
+    {
+        reloc.SetActive(false);
+        ShowGraphActionIcons(true);
     }
 
 
@@ -172,10 +191,18 @@ public class IconController : Singleton<IconController>
             colorPallete.transform.GetComponentsInChildren<Image>()[k].color = BubbleController.I.colors[k];
         }
 
-        InteractHistoryButton(false);
+        relocStateText = reloc.transform.Find("State/Text").GetComponent<TextMeshProUGUI>();
+        relocStartText = reloc.transform.Find("StartButton/Text").GetComponent<TextMeshProUGUI>();
+        RelocManager.I.onStartReloc += OnStartReloc;
+        RelocManager.I.onStopReloc += OnStopReloc;
+        RelocManager.I.onScoreUpdated += WhileRelocalizing;
+        RelocManager.I.onRelocalized += OnRelocalized;
+
+        ShowGraphActionIcons(false);
         ShowTriggerIcons(-1);
         ShowEditMenuIcons(false);
         ShowColorPallete(false);
+        InteractHistoryButton(false);
         MoveSelectRing(-1);
     }
 }

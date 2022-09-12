@@ -104,7 +104,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _AlphaClip: 0
-    - _BackAlpha: 0.15
+    - _BackAlpha: 0.03
     - _Blend: 0
     - _BlendOp: 0
     - _Brightness: 0.2
@@ -120,7 +120,7 @@ Material:
     - _EnvironmentReflections: 1
     - _Frequency: 0.1
     - _Frequency2: 0.4
-    - _FresnelBrightness: 1.2
+    - _FresnelBrightness: 1.5
     - _FresnelPower: 1.5
     - _GlossMapScale: 0
     - _Glossiness: 0
