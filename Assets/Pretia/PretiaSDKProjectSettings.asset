@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 853e5f708b0d65244a3883bca8b79522, type: 3}
   m_Name: PretiaSDKProjectSettings
   m_EditorClassIdentifier: 
-  _appKey: 3641cee59699db611bf7eb4fd1a4bd17bc1c00dc454b18ad60f1980a886523fe
+  _appKey: 9ad1834f6f2e2a542f5294db51ca74d2bdf03525fc4bfe29ee20aaaa66d142b6
   _initializeOnStartup: 1
   LobbyServerAddress: arc-lobby-server.pretiaar.com
   LobbyServerPort: 4321

@@ -1,0 +1,16 @@
+{
+    "name": "Samples.ShooterSample",
+    "references": [
+        "GUID:0a26a169a3ac06f43b80126430ffe918",
+        "GUID:998f8618947d7624f9ca97bd7f3d3f2a"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

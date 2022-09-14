@@ -15,7 +15,7 @@ MonoBehaviour:
   m_GroupName: Pretia
   m_Data:
     m_SerializedData: []
-  m_GUID: 1de4e1cf34e774faaa31a188a22f7fe1
+  m_GUID: e9fae6cc651fded4e964ad6a5603a7c6
   m_SerializeEntries:
   - m_GUID: 964933dec76334e179e3f573d9b18772
     m_Address: PretiaCustomObjects
