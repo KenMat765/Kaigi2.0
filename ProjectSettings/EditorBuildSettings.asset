@@ -6,8 +6,11 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Voice_Recognition/VoiceRecognition.unity
-    guid: b74ac605616d7494992183e2b89a7f10
+    path: Assets/MultiplePlay/Scenes/MultipleLobby.unity
+    guid: c4c2f615530ce4cb59f843b44280f4e0
+  - enabled: 1
+    path: Assets/MultiplePlay/Scenes/MultipleMain.unity
+    guid: ec9c7265c44fb4560ad4284a2f805767
   m_configObjects:
     UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: 0a115139a20d249dc97fc270095ecc7e, type: 2}
     UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: bee4f6f9186a541cc9b6e8c9471f2692, type: 2}
