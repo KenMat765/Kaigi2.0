@@ -712,8 +712,6 @@ public class NetworkBubbleController : Singleton<NetworkBubbleController>
         // 自分からのメッセージの場合は何もしない。
         if (sender == gameSession.LocalPlayer) return;
 
-        MultiDebugger.Log($"Received Move Start Request from UserNumber = {sender.UserNumber}.");
-
         NetworkBubble bubble = GetBubbleById(move_start_msg.id);
         Transform proxy;
         if (!NetworkCameraManager.Instance.TryGetProxyByOwner(sender, out proxy))
@@ -730,8 +728,6 @@ public class NetworkBubbleController : Singleton<NetworkBubbleController>
     {
         // 自分からのメッセージの場合は何もしない。
         if (sender == gameSession.LocalPlayer) return;
-
-        MultiDebugger.Log($"Received Move Stop Request from UserNumber = {sender.UserNumber}.");
 
         NetworkBubble bubble_to_remove = GetBubbleById(move_stop_msg.id);
         BubbleMoveInfoPack request_to_remove = null;
@@ -752,8 +748,6 @@ public class NetworkBubbleController : Singleton<NetworkBubbleController>
     void OnRecievedBubbleSpawnMsg(NetworkBubbleSpawnMsg spawn_msg, Player sender)
     {
         // 全員が受け取る。
-        MultiDebugger.Log($"Received Bubble Spawn Request from UserNumber = {sender.UserNumber}.");
-
         id_cache = spawn_msg.id;
         input_text_cache = spawn_msg.inputText;
     }
@@ -763,8 +757,6 @@ public class NetworkBubbleController : Singleton<NetworkBubbleController>
     {
         // 送信者以外が実行する。（送信者は自分で色を変える。）
         if (sender == gameSession.LocalPlayer) return;
-
-        MultiDebugger.Log($"Received Color Request from UserNumber = {sender.UserNumber}.");
 
         NetworkBubble bubble = GetBubbleById(color_msg.id);
         Color color = colors[color_msg.colorNumber];
@@ -777,8 +769,6 @@ public class NetworkBubbleController : Singleton<NetworkBubbleController>
         // 送信者以外が実行する。（送信者は自分で消す。）
         if (sender == gameSession.LocalPlayer) return;
 
-        MultiDebugger.Log($"Received Discard Request from UserNumber = {sender.UserNumber}.");
-
         NetworkBubble bubble = GetBubbleById(discard_msg.id);
         bubble.Discard();
     }
@@ -787,8 +777,6 @@ public class NetworkBubbleController : Singleton<NetworkBubbleController>
     void OnRecievedNodeSpawnMsg(NetworkNodeSpawnMsg spawn_msg, Player sender)
     {
         // 全員が受け取る。
-        MultiDebugger.Log($"Received Node Spawn Request from UserNumber = {sender.UserNumber}.");
-
         start_id_cache = spawn_msg.startId;
         end_id_cache = spawn_msg.endId;
     }
@@ -798,8 +786,6 @@ public class NetworkBubbleController : Singleton<NetworkBubbleController>
     {
         // 送信者以外が実行する。（送信者は自分で記録する。）
         if (sender == gameSession.LocalPlayer) return;
-
-        MultiDebugger.Log($"Received Record Request from UserNumber = {sender.UserNumber}.");
 
         ignoreRecord = false;
         RecordHistory();
@@ -811,8 +797,6 @@ public class NetworkBubbleController : Singleton<NetworkBubbleController>
         // 送信者以外が実行する。（送信者は自分で戻す。）
         if (sender == gameSession.LocalPlayer) return;
 
-        MultiDebugger.Log($"Received Playback Request from UserNumber = {sender.UserNumber}.");
-
         PlayBackHistory(playback_msg.editingHistory);
     }
 
@@ -821,8 +805,6 @@ public class NetworkBubbleController : Singleton<NetworkBubbleController>
     {
         // 送信者以外が実行する。
         if (sender == gameSession.LocalPlayer) return;
-
-        MultiDebugger.Log($"Received History Edit Msg from UserNumber = {sender.UserNumber}.");
 
         if (!msg.enableEdit && graphAction != GraphAction.NONE) ChangeGraphAction(0);
         NetworkIconController.I.ShowGraphActionIcons(msg.enableEdit);
@@ -833,8 +815,6 @@ public class NetworkBubbleController : Singleton<NetworkBubbleController>
     {
         // 送信者以外が実行する。
         if (sender == gameSession.LocalPlayer) return;
-
-        MultiDebugger.Log($"Received Suspend History Edit Msg from UserNumber = {sender.UserNumber}.");
 
         // 先にヒストリー編集モードに入っていた人がいた場合。（同時押しなど、イレギュラーな場合。）
         if (msg.suspend && graphAction == GraphAction.HISTORY) ChangeEditMode(0);

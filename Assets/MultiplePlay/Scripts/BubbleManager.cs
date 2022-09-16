@@ -27,7 +27,13 @@ public class BubbleManager : MonoBehaviour
         gameSession.HostMsg.Register<NetworkHostNumberMsg>(OnReceivedHostNumberMsg);
     }
 
-    async void Start()
+    void Start()
+    {
+        // リローカライゼーションが完了したら接続。
+        RelocManager.I.onRelocalized += Connect;
+    }
+
+    async void Connect()
     {
         // Join Session.
         var gameSession = await NetworkManager.Instance.GetLatestSessionAsync();
@@ -55,8 +61,10 @@ public class BubbleManager : MonoBehaviour
     {
         if (gameSession != null)
         {
+            // Connect内で登録されたメソッドも忘れずに消去。
             gameSession.NetworkSpawner.OnInstantiated -= OnInstantiated;
         }
+        RelocManager.I.onRelocalized -= Connect;
     }
 
     // 自分が入室した時。
@@ -85,27 +93,24 @@ public class BubbleManager : MonoBehaviour
 
     void OnInstantiated(NetworkIdentity networkIdentity)
     {
-        // スポーンされたのがCameraProxyかどうか。(= Joinしたタイミング)
+        Player player = networkIdentity.Owner;
+
+        // スポーンされたProxyが自分のものだったら何もしない（自分に字幕は付けない）
+        if (player == gameSession.LocalPlayer) return;
+
+        // 入室者のProxyが得られなかった場合は何もしない。(基本的には得られるはず)
+        Transform player_proxy;
+        if (!cameraManager.TryGetProxyByOwner(player, out player_proxy)) return;
+
+        // スポーンされたのがCameraProxyだった場合。(= Joinしたタイミング)
         NetworkCameraProxy cameraProxy;
         if (networkIdentity.TryGetComponent<NetworkCameraProxy>(out cameraProxy))
         {
-            Player player = networkIdentity.Owner;
-
-            if (player == gameSession.LocalPlayer) return;
-
-            Transform player_proxy;
-            if (cameraManager.TryGetProxyByOwner(player, out player_proxy))
-            {
-                // 字幕はスポーンする(皆んなで共有する)必要はない。
-                // 参加者が各々Localで他の参加者の位置に字幕を表示させれば良い。
-                Instantiate(subtitlePrefab, player_proxy.position, Quaternion.identity, subtitleParent);
-                subtitlePrefab.GetComponent<FollowProxy>().targetProxy = player_proxy;
-
-                // 
-                // 
-                // 
-                subtitlePrefab.GetComponent<Subtitle>().tmp.text = player.UserNumber.ToString();
-            }
+            // 字幕はスポーンする(皆んなで共有する)必要はない。
+            // 参加者が各々Localで他の参加者の位置に字幕を表示させれば良い。
+            GameObject subtitle_object = Instantiate(subtitlePrefab, player_proxy.position, Quaternion.identity, subtitleParent);
+            subtitle_object.GetComponent<FollowProxy>().targetProxy = player_proxy;
+            subtitle_object.GetComponent<Subtitle>().tmp.text = player.UserNumber.ToString();
         }
     }
 
@@ -117,7 +122,7 @@ public class BubbleManager : MonoBehaviour
     // 
     //
     // 
-    // !! 問題あり : ホストが抜けた時、新しいホストが更新されない。 !! 
+    // !! 問題あり : ホストが抜けた時、新しいホストが更新されない !! 
     void OnDisconnected(Player player)
     {
         // // ホストが抜けたときに以下を実行。

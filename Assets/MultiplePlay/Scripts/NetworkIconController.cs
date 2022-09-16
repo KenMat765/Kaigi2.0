@@ -201,13 +201,21 @@ public class NetworkIconController : Singleton<NetworkIconController>
         // 
         // 
         // 
-        reloc.SetActive(false);
-        ShowGraphActionIcons(true);
+        reloc.SetActive(true);
+        ShowGraphActionIcons(false);
 
         ShowTriggerIcons(-1);
         ShowEditMenuIcons(false);
         ShowColorPallete(false);
         InteractHistoryButton(false);
         MoveSelectRing(-1);
+    }
+
+    void OnDestroy()
+    {
+        RelocManager.I.onStartReloc -= OnStartReloc;
+        RelocManager.I.onStopReloc -= OnStopReloc;
+        RelocManager.I.onScoreUpdated -= WhileRelocalizing;
+        RelocManager.I.onRelocalized -= OnRelocalized;
     }
 }
