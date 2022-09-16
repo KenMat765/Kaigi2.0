@@ -1672,7 +1672,7 @@ MonoBehaviour:
       - m_Target: {fileID: 1410499182}
         m_TargetAssemblyTypeName: NetworkBubbleController, Assembly-CSharp
         m_MethodName: ExitEditMode
-        m_Mode: 6
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -3197,7 +3197,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e27da5f7918949d88d39f8629bbecb5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nodePrefab: {fileID: 8578944094609409194, guid: 3cabcc0d63ea44bea853c1ebc632ec47, type: 3}
   colors:
   - {r: 1, g: 0, b: 0.9098039, a: 1}
   - {r: 0.17254902, g: 1, b: 0, a: 1}

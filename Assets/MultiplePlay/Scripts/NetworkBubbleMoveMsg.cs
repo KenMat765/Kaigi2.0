@@ -57,6 +57,30 @@ public class NetworkRecordMsg
 [System.Serializable]
 [NetworkMessage]
 [MessagePackObject]
+public class NetworkPlaybackMsg
+{
+    [Key(0)] public int editingHistory;
+}
+
+[System.Serializable]
+[NetworkMessage]
+[MessagePackObject]
+public class NetworkHistoryEditMsg
+{
+    [Key(0)] public bool enableEdit;
+}
+
+[System.Serializable]
+[NetworkMessage]
+[MessagePackObject]
+public class NetworkSuspendHistoryEditMsg
+{
+    [Key(0)] public bool suspend;
+}
+
+[System.Serializable]
+[NetworkMessage]
+[MessagePackObject]
 public class NetworkNodeSpawnMsg
 {
     [Key(0)] public int startId;

@@ -39,7 +39,15 @@ public class NetworkBubbleController : Singleton<NetworkBubbleController>
             case GraphAction.NONE: break;
             case GraphAction.GENERATE: break;
             case GraphAction.SELECT: TargetController.I.DeactivateAllTargets(); break;
-            case GraphAction.HISTORY: break;
+            case GraphAction.HISTORY:
+
+                // 
+                // 
+                // 
+                // ヒストリー編集を終えた時、他の参加者にバブルの編集を許可する。
+                gameSession.PlayerMsg.Send(new NetworkHistoryEditMsg { enableEdit = true });
+
+                break;
         }
         switch (new_action)
         {
@@ -59,6 +67,13 @@ public class NetworkBubbleController : Singleton<NetworkBubbleController>
             case GraphAction.HISTORY:
                 NetworkIconController.I.ShowTriggerIcons(2);
                 NetworkIconController.I.MoveSelectRing(2);
+
+                // 
+                // 
+                // 
+                // ヒストリー編集モードに入ったとき、他の参加者がバブルの編集を行うのを禁止するメッセージを送る。
+                gameSession.PlayerMsg.Send(new NetworkHistoryEditMsg { enableEdit = false });
+
                 break;
         }
     }
@@ -135,6 +150,12 @@ public class NetworkBubbleController : Singleton<NetworkBubbleController>
         NetworkIconController.I.ShowGraphActionIcons(false);
         NetworkIconController.I.ShowEditMenuIcons(true);
         ChangeEditMode(0);
+
+        // 
+        // 
+        // 
+        // 他の参加者のヒストリー編集権限を奪う。
+        gameSession.PlayerMsg.Send(new NetworkSuspendHistoryEditMsg { suspend = true });
     }
     public void ChangeEditMode(int mode_number)
     {
@@ -242,14 +263,21 @@ public class NetworkBubbleController : Singleton<NetworkBubbleController>
 
         TargetController.I.DeactivateAllTargets();
 
+        // 
+        // 
+        // 
+        // ignoreRecordでないなら他の参加者に対してもレコードするようメッセージを送る。
+        // ignoreRecordはRecordHistory内でtrueになってしまうので、その前に送信する。
+        if (!ignoreRecord) gameSession.PlayerMsg.Send(new NetworkRecordMsg { });
+
         // Record 2.
         RecordHistory();
 
         // 
         // 
         // 
-        // ignoreRecordでないなら他の参加者に対してもレコードするようメッセージを送る。
-        if (!ignoreRecord) gameSession.PlayerMsg.Send(new NetworkRecordMsg { });
+        // 他の参加者のヒストリー編集権限を与える。
+        gameSession.PlayerMsg.Send(new NetworkSuspendHistoryEditMsg { suspend = false });
     }
 
 
@@ -506,6 +534,12 @@ public class NetworkBubbleController : Singleton<NetworkBubbleController>
         if (editing_history == currentEditingHistory) return;
 
         PlayBackHistory(editing_history);
+
+        // 
+        // 
+        // 
+        // 他の参加者に対し歴史を戻すようメッセージを送る。
+        gameSession.PlayerMsg.Send(new NetworkPlaybackMsg { editingHistory = editing_history });
     }
 
 
@@ -584,6 +618,9 @@ public class NetworkBubbleController : Singleton<NetworkBubbleController>
 
         // History Message.
         gameSession.PlayerMsg.Register<NetworkRecordMsg>(OnRecievedRecordMsg);
+        gameSession.PlayerMsg.Register<NetworkPlaybackMsg>(OnRecievedPlaybackMsg);
+        gameSession.PlayerMsg.Register<NetworkHistoryEditMsg>(OnRecievedHistoryEditMsg);
+        gameSession.PlayerMsg.Register<NetworkSuspendHistoryEditMsg>(OnRecievedSuspendHistoryEditMsg);
     }
 
     void OnDisable()
@@ -598,6 +635,9 @@ public class NetworkBubbleController : Singleton<NetworkBubbleController>
             gameSession.PlayerMsg.Unregister<NetworkBubbleDiscardMsg>(OnRecievedDiscardMsg);
             gameSession.PlayerMsg.Unregister<NetworkNodeSpawnMsg>(OnRecievedNodeSpawnMsg);
             gameSession.PlayerMsg.Unregister<NetworkRecordMsg>(OnRecievedRecordMsg);
+            gameSession.PlayerMsg.Unregister<NetworkPlaybackMsg>(OnRecievedPlaybackMsg);
+            gameSession.PlayerMsg.Unregister<NetworkHistoryEditMsg>(OnRecievedHistoryEditMsg);
+            gameSession.PlayerMsg.Unregister<NetworkSuspendHistoryEditMsg>(OnRecievedSuspendHistoryEditMsg);
         }
     }
 
@@ -756,12 +796,48 @@ public class NetworkBubbleController : Singleton<NetworkBubbleController>
     // Player to Everybody.
     void OnRecievedRecordMsg(NetworkRecordMsg record_msg, Player sender)
     {
-        // 送信者以外が実行する。（送信者は自分で消す。）
+        // 送信者以外が実行する。（送信者は自分で記録する。）
         if (sender == gameSession.LocalPlayer) return;
 
         MultiDebugger.Log($"Received Record Request from UserNumber = {sender.UserNumber}.");
 
         ignoreRecord = false;
         RecordHistory();
+    }
+
+    // Player to Everybody.
+    void OnRecievedPlaybackMsg(NetworkPlaybackMsg playback_msg, Player sender)
+    {
+        // 送信者以外が実行する。（送信者は自分で戻す。）
+        if (sender == gameSession.LocalPlayer) return;
+
+        MultiDebugger.Log($"Received Playback Request from UserNumber = {sender.UserNumber}.");
+
+        PlayBackHistory(playback_msg.editingHistory);
+    }
+
+    // Player to Everybody.
+    void OnRecievedHistoryEditMsg(NetworkHistoryEditMsg msg, Player sender)
+    {
+        // 送信者以外が実行する。
+        if (sender == gameSession.LocalPlayer) return;
+
+        MultiDebugger.Log($"Received History Edit Msg from UserNumber = {sender.UserNumber}.");
+
+        if (!msg.enableEdit && graphAction != GraphAction.NONE) ChangeGraphAction(0);
+        NetworkIconController.I.ShowGraphActionIcons(msg.enableEdit);
+    }
+
+    // Player to Everybody.
+    void OnRecievedSuspendHistoryEditMsg(NetworkSuspendHistoryEditMsg msg, Player sender)
+    {
+        // 送信者以外が実行する。
+        if (sender == gameSession.LocalPlayer) return;
+
+        MultiDebugger.Log($"Received Suspend History Edit Msg from UserNumber = {sender.UserNumber}.");
+
+        // 先にヒストリー編集モードに入っていた人がいた場合。（同時押しなど、イレギュラーな場合。）
+        if (msg.suspend && graphAction == GraphAction.HISTORY) ChangeEditMode(0);
+        NetworkIconController.I.InteractHistoryButton(!msg.suspend);
     }
 }
