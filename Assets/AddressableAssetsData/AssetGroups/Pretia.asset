@@ -15,7 +15,11 @@ MonoBehaviour:
   m_GroupName: Pretia
   m_Data:
     m_SerializedData: []
+<<<<<<< Updated upstream
   m_GUID: e9fae6cc651fded4e964ad6a5603a7c6
+=======
+  m_GUID: f8b9b981bad1f4b15aea521ebea6fb4c
+>>>>>>> Stashed changes
   m_SerializeEntries:
   - m_GUID: 964933dec76334e179e3f573d9b18772
     m_Address: PretiaCustomObjects

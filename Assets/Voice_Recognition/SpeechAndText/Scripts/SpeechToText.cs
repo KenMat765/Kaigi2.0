@@ -8,7 +8,6 @@ namespace TextSpeech
 {
     public class SpeechToText : MonoBehaviour
     {
-
         #region Init
         private static SpeechToText _instance;
         public static SpeechToText Instance
