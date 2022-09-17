@@ -12,11 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 468a46d0ae32c3544b7d98094e6448a9, type: 3}
   m_Name: AddressableAssetSettings
   m_EditorClassIdentifier: 
-<<<<<<< HEAD
-  m_DefaultGroup: 82aca763cfa80da4980a7b4f0bc76f4b
-=======
   m_DefaultGroup: 
->>>>>>> a49d2be77d1076dd234af9008f5af3235b6c32bd
   m_CachedHash:
     serializedVersion: 2
     Hash: 00000000000000000000000000000000
@@ -56,63 +52,33 @@ MonoBehaviour:
   m_ProfileSettings:
     m_Profiles:
     - m_InheritedParent: 
-<<<<<<< HEAD
-      m_Id: 8da0b1604d62b22419b96dbb2ff26c81
+      m_Id: 08dbaee9a60014a5dbc6168ea40ce93f
       m_ProfileName: Default
       m_Values:
-      - m_Id: 6e8d1c99649f07f4ab1d2d0c58055921
+      - m_Id: d5ce72dd36ad741a29d4413dd5904c8f
         m_Value: '[UnityEditor.EditorUserBuildSettings.activeBuildTarget]'
-      - m_Id: 2b93a747501d79144903047a492597b5
+      - m_Id: c1ec612660e164a0fa3f89c5ac8b4915
         m_Value: '[UnityEngine.AddressableAssets.Addressables.BuildPath]/[BuildTarget]'
-      - m_Id: 4c79761e1d936ab49aaa9def6eeff341
+      - m_Id: 3f9ebc63d15be43c49806fec6c7f692c
         m_Value: '{UnityEngine.AddressableAssets.Addressables.RuntimePath}/[BuildTarget]'
-      - m_Id: 1ba6e0ef066e02d4886764ed17c279b0
+      - m_Id: 3ac514fcede074b589fbc5fae10b02ee
         m_Value: ServerData/[BuildTarget]
-      - m_Id: 03cb95a098541d849a2346ccdd66c02a
+      - m_Id: 290d09c6a20ae499ca2d05553f9d33a3
         m_Value: http://[PrivateIpAddress]:[HostingServicePort]
     m_ProfileEntryNames:
-    - m_Id: 6e8d1c99649f07f4ab1d2d0c58055921
+    - m_Id: d5ce72dd36ad741a29d4413dd5904c8f
       m_Name: BuildTarget
       m_InlineUsage: 0
-    - m_Id: 2b93a747501d79144903047a492597b5
+    - m_Id: c1ec612660e164a0fa3f89c5ac8b4915
       m_Name: Local.BuildPath
       m_InlineUsage: 0
-    - m_Id: 4c79761e1d936ab49aaa9def6eeff341
+    - m_Id: 3f9ebc63d15be43c49806fec6c7f692c
       m_Name: Local.LoadPath
       m_InlineUsage: 0
-    - m_Id: 1ba6e0ef066e02d4886764ed17c279b0
+    - m_Id: 3ac514fcede074b589fbc5fae10b02ee
       m_Name: Remote.BuildPath
       m_InlineUsage: 0
-    - m_Id: 03cb95a098541d849a2346ccdd66c02a
-=======
-      m_Id: 064a1aa8e1dc45b45a717df343c0f6fd
-      m_ProfileName: Default
-      m_Values:
-      - m_Id: 1936cd7f735e5ad44b62aebb7b9b7248
-        m_Value: '[UnityEditor.EditorUserBuildSettings.activeBuildTarget]'
-      - m_Id: 701751ccdaab5fd4492e80ac13badd24
-        m_Value: '[UnityEngine.AddressableAssets.Addressables.BuildPath]/[BuildTarget]'
-      - m_Id: 0395c70bf19eddc40932962580226fd2
-        m_Value: '{UnityEngine.AddressableAssets.Addressables.RuntimePath}/[BuildTarget]'
-      - m_Id: 892942daf2d81df448cb4b02a3fc42a6
-        m_Value: ServerData/[BuildTarget]
-      - m_Id: b3c703cbcb755d74d8aa5acdcf321f54
-        m_Value: http://[PrivateIpAddress]:[HostingServicePort]
-    m_ProfileEntryNames:
-    - m_Id: 1936cd7f735e5ad44b62aebb7b9b7248
-      m_Name: BuildTarget
-      m_InlineUsage: 0
-    - m_Id: 701751ccdaab5fd4492e80ac13badd24
-      m_Name: Local.BuildPath
-      m_InlineUsage: 0
-    - m_Id: 0395c70bf19eddc40932962580226fd2
-      m_Name: Local.LoadPath
-      m_InlineUsage: 0
-    - m_Id: 892942daf2d81df448cb4b02a3fc42a6
-      m_Name: Remote.BuildPath
-      m_InlineUsage: 0
-    - m_Id: b3c703cbcb755d74d8aa5acdcf321f54
->>>>>>> a49d2be77d1076dd234af9008f5af3235b6c32bd
+    - m_Id: 290d09c6a20ae499ca2d05553f9d33a3
       m_Name: Remote.LoadPath
       m_InlineUsage: 0
     m_ProfileVersion: 1
@@ -133,11 +99,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 6cc3170e5617944759310eac46737baf, type: 2}
   - {fileID: 11400000, guid: 3ba38a5e01ff14066b7e835a93bfb50e, type: 2}
   - {fileID: 11400000, guid: 5315953d2d5974705b09c939ff346cca, type: 2}
-<<<<<<< HEAD
-  m_ActiveProfileId: 8da0b1604d62b22419b96dbb2ff26c81
-=======
-  m_ActiveProfileId: 064a1aa8e1dc45b45a717df343c0f6fd
->>>>>>> a49d2be77d1076dd234af9008f5af3235b6c32bd
+  m_ActiveProfileId: 08dbaee9a60014a5dbc6168ea40ce93f
   m_HostingServicesManager:
     m_HostingServiceInfos: []
     m_Settings: {fileID: 11400000}
