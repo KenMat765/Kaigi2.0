@@ -76,7 +76,15 @@ public class BubbleController : Singleton<BubbleController>
     // 
     // 
     // 
-    public void OnReleasedVoiceInputButton() => GenerateBubble("Debug");
+    public void OnPressedVoiceInputButton() 
+    {
+        
+    }
+
+    public void OnReleasedVoiceInputButton()
+    { 
+        GenerateBubble("Debug");
+    }
 
     bool raycasting;
     public void StartRaycasting()
