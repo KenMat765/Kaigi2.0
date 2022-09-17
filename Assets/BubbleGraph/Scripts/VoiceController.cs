@@ -28,7 +28,6 @@ public class VoiceController : MonoBehaviour
         }
 #endif
     }
-
     #region Text to Speech
 
     public void StartSpeaking(string message){
@@ -65,7 +64,6 @@ public class VoiceController : MonoBehaviour
     }
 
     #endregion
-
 
     void Setup(string code){
         TextToSpeech.Instance.Setting(code,1,1);

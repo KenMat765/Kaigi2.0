@@ -15,19 +15,10 @@ MonoBehaviour:
   m_GroupName: Default Local Group
   m_Data:
     m_SerializedData: []
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-  m_GUID: 82aca763cfa80da4980a7b4f0bc76f4b
-=======
-  m_GUID: 4f907fd295543ae4ea66b668bb098c3d
->>>>>>> a49d2be77d1076dd234af9008f5af3235b6c32bd
-=======
-  m_GUID: 72f72961b39be448abdc944ccb4f3b26
->>>>>>> Stashed changes
+  m_GUID: f814d5003f01642e9b9ec902fb305de2
   m_SerializeEntries: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 6717cd21ea54245fbb268abdb30e7903, type: 2}
   m_SchemaSet:
     m_Schemas:
     - {fileID: 11400000, guid: 7cf10a912c5df4d23b78e67bbccbe367, type: 2}
-    - {fileID: 11400000, guid: 2f78362e0fb4b429b8f8308a924a4b95, type: 2}
