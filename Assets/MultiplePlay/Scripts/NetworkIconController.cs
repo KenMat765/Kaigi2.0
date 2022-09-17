@@ -210,12 +210,4 @@ public class NetworkIconController : Singleton<NetworkIconController>
         InteractHistoryButton(false);
         MoveSelectRing(-1);
     }
-
-    void OnDestroy()
-    {
-        RelocManager.I.onStartReloc -= OnStartReloc;
-        RelocManager.I.onStopReloc -= OnStopReloc;
-        RelocManager.I.onScoreUpdated -= WhileRelocalizing;
-        RelocManager.I.onRelocalized -= OnRelocalized;
-    }
 }

@@ -591,12 +591,8 @@ public class NetworkBubbleController : Singleton<NetworkBubbleController>
     string input_text_cache;
 
     // ノードのスポーン時に共有されるノードの情報。
-    int start_id_cache, end_id_cache;
-
-    // 現在選択中のバブルが自分で編集可能かどうか（＝編集した内容が他の参加者に反映されるかどうか。）
-    // オーナーであれば自分の編集が他の参加者に反映される。
-    // !! ホストであっても、所有権が自分になければ編集は反映されない !!
-    bool editableBySelf => current_selected_bubble == null ? true : current_selected_bubble.identity.Owner == gameSession.LocalPlayer;
+    int start_id_cache;
+    int end_id_cache;
 
     // 編集するバブル ＋ 編集モードのセット。
     List<BubbleMoveInfoPack> moveRequests = new List<BubbleMoveInfoPack>();
@@ -604,6 +600,8 @@ public class NetworkBubbleController : Singleton<NetworkBubbleController>
     async void OnEnable()
     {
         gameSession = await NetworkManager.Instance.GetLatestSessionAsync();
+
+        // Callbacks.
         gameSession.NetworkSpawner.OnInstantiated += OnInstantiated;
 
         // Bubble Messages.
@@ -628,12 +626,21 @@ public class NetworkBubbleController : Singleton<NetworkBubbleController>
         if (gameSession != null)
         {
             if (!gameSession.Disposed) gameSession.Dispose();
+
+            // Callbacks.
+            gameSession.NetworkSpawner.OnInstantiated -= OnInstantiated;
+
+            // Bubble Messages.
             gameSession.PlayerMsg.Unregister<NetworkBubbleMoveStartMsg>(OnRecievedMoveStartMsg);
             gameSession.PlayerMsg.Unregister<NetworkBubbleMoveStopMsg>(OnRecievedMoveStopMsg);
             gameSession.PlayerMsg.Unregister<NetworkBubbleSpawnMsg>(OnRecievedBubbleSpawnMsg);
             gameSession.PlayerMsg.Unregister<NetworkBubbleColorMsg>(OnRecievedColorMsg);
             gameSession.PlayerMsg.Unregister<NetworkBubbleDiscardMsg>(OnRecievedDiscardMsg);
+
+            // Node Messages.
             gameSession.PlayerMsg.Unregister<NetworkNodeSpawnMsg>(OnRecievedNodeSpawnMsg);
+
+            // History Messages.
             gameSession.PlayerMsg.Unregister<NetworkRecordMsg>(OnRecievedRecordMsg);
             gameSession.PlayerMsg.Unregister<NetworkPlaybackMsg>(OnRecievedPlaybackMsg);
             gameSession.PlayerMsg.Unregister<NetworkHistoryEditMsg>(OnRecievedHistoryEditMsg);
@@ -648,7 +655,7 @@ public class NetworkBubbleController : Singleton<NetworkBubbleController>
 
         // ホストを親としてバブル生成。
         Transform device_trans = NetworkCameraManager.Instance.LocalProxy;
-        gameSession.NetworkSpawner.Instantiate(bubbleIdentity, device_trans.position + device_trans.forward * offset, Quaternion.identity, BubbleManager.Host);
+        gameSession.NetworkSpawner.Instantiate(bubbleIdentity, device_trans.position + device_trans.forward * offset, Quaternion.identity, ConnectionController.Host);
     }
 
     void NetworkSpawnNode(NetworkBubble start_bubble, NetworkBubble end_bubble)
@@ -657,7 +664,7 @@ public class NetworkBubbleController : Singleton<NetworkBubbleController>
         gameSession.PlayerMsg.Send(new NetworkNodeSpawnMsg { startId = start_bubble.id, endId = end_bubble.id });
 
         // ノードのTransformとオーナーはどうでも良い。
-        gameSession.NetworkSpawner.Instantiate(nodeIdentity, Vector3.zero, Quaternion.identity, BubbleManager.Host);
+        gameSession.NetworkSpawner.Instantiate(nodeIdentity, Vector3.zero, Quaternion.identity, ConnectionController.Host);
     }
 
     void OnInstantiated(NetworkIdentity networkIdentity)
