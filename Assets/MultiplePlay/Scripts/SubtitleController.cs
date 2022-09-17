@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using PretiaArCloud.Networking;
+using TextSpeech;
 
 public class SubtitleController : Singleton<SubtitleController>
 {
@@ -15,10 +16,13 @@ public class SubtitleController : Singleton<SubtitleController>
 
     IGameSession gameSession;
 
+    uint actionNumber;
+
     async void OnEnable()
     {
         gameSession = await NetworkManager.Instance.GetLatestSessionAsync();
         gameSession.OnDisconnected += DeleteSubtitle;
+        gameSession.PlayerMsg.Register<NetworkSubtitleMsg>(OnReceiveSubtitle);
     }
 
     void OnDisable()
@@ -27,6 +31,7 @@ public class SubtitleController : Singleton<SubtitleController>
         {
             if (!gameSession.Disposed) gameSession.Dispose();
             gameSession.OnDisconnected -= DeleteSubtitle;
+            gameSession.PlayerMsg.Unregister<NetworkSubtitleMsg>(OnReceiveSubtitle);
         }
     }
 
@@ -35,6 +40,8 @@ public class SubtitleController : Singleton<SubtitleController>
         // NetworkCameraManagerのOnEnableで、OnInstantiatedにProxyを追加する処理が入るが、それよりも後にOnInstantiatedに処理を追加したい。
         var gameSession = await NetworkManager.Instance.GetLatestSessionAsync();
         gameSession.NetworkSpawner.OnInstantiated += GenerateSubtitle;
+
+        actionNumber = VoiceInputSwitch.I.RegisterAction(OnRecordVoice);
     }
 
     void OnDestroy()
@@ -62,12 +69,7 @@ public class SubtitleController : Singleton<SubtitleController>
             GameObject subtitle_object = Instantiate(subtitlePrefab, player_proxy.position, Quaternion.identity, subtitleParent);
             subtitle_object.GetComponent<FollowProxy>().targetProxy = player_proxy;
             Subtitle subtitle = subtitle_object.GetComponent<Subtitle>();
-
-            // 
-            // 
-            // 
-            subtitle.tmp.text = player.UserNumber.ToString();
-
+            subtitle.tmp.text = "";
             subtitleMap.Add(player.UserNumber, subtitle);
         }
     }
@@ -81,5 +83,32 @@ public class SubtitleController : Singleton<SubtitleController>
             subtitleMap.Remove(user_number);
             Destroy(subtitle.gameObject);
         }
+    }
+
+    void OnRecordVoice(string result)
+    {
+        // 自分の声を他の参加者に届ける。
+        gameSession.PlayerMsg.Send(new NetworkSubtitleMsg { voice = result });
+    }
+
+    void OnReceiveSubtitle(NetworkSubtitleMsg msg, Player sender)
+    {
+        uint userNumber = sender.UserNumber;
+
+        if (!subtitleMap.ContainsKey(userNumber)) return;
+
+        Subtitle subtitle = subtitleMap[userNumber];
+        subtitle.tmp.text += msg.voice;
+    }
+
+    public void OnPressedRecord()
+    {
+        VoiceInputSwitch.I.SwitchAction(actionNumber);
+        SpeechToText.Instance.StartRecording();
+    }
+
+    public void OnReleasedRecord()
+    {
+        SpeechToText.Instance.StopRecording();
     }
 }
