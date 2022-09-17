@@ -54,6 +54,8 @@ public class NetworkIconController : Singleton<NetworkIconController>
         topMenu.DOAnchorPosY(destinationY, duration);
     }
 
+    public void EnableGraphActions(bool enable) => graphButton.interactable = enable;
+
     public void ShowSubtitleVoiceButton(bool show) => subtitleVoiceButton.gameObject.SetActive(show);
 
     public void ShowGraphActionIcons(bool show)

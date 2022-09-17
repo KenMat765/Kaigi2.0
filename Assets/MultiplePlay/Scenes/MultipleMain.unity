@@ -2183,7 +2183,7 @@ GameObject:
   - component: {fileID: 881208407}
   - component: {fileID: 881208408}
   m_Layer: 0
-  m_Name: BubbleManager
+  m_Name: Connection Controller
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2661,38 +2661,14 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 570272587}
-        m_TargetAssemblyTypeName: NetworkIconController, Assembly-CSharp
-        m_MethodName: ShowGraphActionIcons
-        m_Mode: 6
+      - m_Target: {fileID: 1410499182}
+        m_TargetAssemblyTypeName: NetworkBubbleController, Assembly-CSharp
+        m_MethodName: ChangeTopMenu
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-      - m_Target: {fileID: 570272587}
-        m_TargetAssemblyTypeName: NetworkIconController, Assembly-CSharp
-        m_MethodName: ShowBackButton
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-      - m_Target: {fileID: 570272587}
-        m_TargetAssemblyTypeName: NetworkIconController, Assembly-CSharp
-        m_MethodName: ShowTopMenu
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 2
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -3173,38 +3149,14 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 570272587}
-        m_TargetAssemblyTypeName: NetworkIconController, Assembly-CSharp
-        m_MethodName: ShowSubtitleVoiceButton
-        m_Mode: 6
+      - m_Target: {fileID: 1410499182}
+        m_TargetAssemblyTypeName: NetworkBubbleController, Assembly-CSharp
+        m_MethodName: ChangeTopMenu
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-      - m_Target: {fileID: 570272587}
-        m_TargetAssemblyTypeName: NetworkIconController, Assembly-CSharp
-        m_MethodName: ShowBackButton
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-      - m_Target: {fileID: 570272587}
-        m_TargetAssemblyTypeName: NetworkIconController, Assembly-CSharp
-        m_MethodName: ShowTopMenu
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -3902,46 +3854,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 570272587}
-        m_TargetAssemblyTypeName: NetworkIconController, Assembly-CSharp
-        m_MethodName: ShowTopMenu
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-      - m_Target: {fileID: 570272587}
-        m_TargetAssemblyTypeName: NetworkIconController, Assembly-CSharp
-        m_MethodName: ShowBackButton
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 570272587}
-        m_TargetAssemblyTypeName: NetworkIconController, Assembly-CSharp
-        m_MethodName: ShowSubtitleVoiceButton
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 570272587}
-        m_TargetAssemblyTypeName: NetworkIconController, Assembly-CSharp
-        m_MethodName: ShowGraphActionIcons
-        m_Mode: 6
+      - m_Target: {fileID: 1410499182}
+        m_TargetAssemblyTypeName: NetworkBubbleController, Assembly-CSharp
+        m_MethodName: ChangeTopMenu
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

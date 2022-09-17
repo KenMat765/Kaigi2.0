@@ -20,6 +20,51 @@ public class NetworkBubbleController : Singleton<NetworkBubbleController>
 
 
 
+    // Top Menu.
+    public enum TopMenu { NONE, SUBTITLE, GRAPH }
+    TopMenu topMenu;
+    public void ChangeTopMenu(int menu_number)
+    {
+        TopMenu old_menu = topMenu;
+        TopMenu new_menu = (TopMenu)menu_number;
+        topMenu = new_menu;
+        OnMenuChanged(old_menu, new_menu);
+    }
+    void OnMenuChanged(TopMenu old_menu, TopMenu new_menu)
+    {
+        switch (old_menu)
+        {
+            case TopMenu.NONE:
+                NetworkIconController.I.ShowTopMenu(false);
+                break;
+            case TopMenu.SUBTITLE:
+                NetworkIconController.I.ShowSubtitleVoiceButton(false);
+                NetworkIconController.I.ShowBackButton(false);
+                break;
+            case TopMenu.GRAPH:
+                NetworkIconController.I.ShowGraphActionIcons(false);
+                NetworkIconController.I.ShowBackButton(false);
+                if (graphAction != GraphAction.NONE) ChangeGraphAction(0);
+                break;
+        }
+        switch (new_menu)
+        {
+            case TopMenu.NONE:
+                NetworkIconController.I.ShowTopMenu(true);
+                break;
+            case TopMenu.SUBTITLE:
+                NetworkIconController.I.ShowSubtitleVoiceButton(true);
+                NetworkIconController.I.ShowBackButton(true);
+                break;
+            case TopMenu.GRAPH:
+                NetworkIconController.I.ShowGraphActionIcons(true);
+                NetworkIconController.I.ShowBackButton(true);
+                break;
+        }
+    }
+
+
+
     // Graph Actions.
     public enum GraphAction { NONE, GENERATE, SELECT, HISTORY }
     GraphAction graphAction;
@@ -42,9 +87,6 @@ public class NetworkBubbleController : Singleton<NetworkBubbleController>
             case GraphAction.SELECT: TargetController.I.DeactivateAllTargets(); break;
             case GraphAction.HISTORY:
 
-                // 
-                // 
-                // 
                 // ヒストリー編集を終えた時、他の参加者にバブルの編集を許可する。
                 gameSession.PlayerMsg.Send(new NetworkHistoryEditMsg { enableEdit = true });
 
@@ -69,9 +111,6 @@ public class NetworkBubbleController : Singleton<NetworkBubbleController>
                 NetworkIconController.I.ShowTriggerIcons(2);
                 NetworkIconController.I.MoveSelectRing(2);
 
-                // 
-                // 
-                // 
                 // ヒストリー編集モードに入ったとき、他の参加者がバブルの編集を行うのを禁止するメッセージを送る。
                 gameSession.PlayerMsg.Send(new NetworkHistoryEditMsg { enableEdit = false });
 
@@ -110,9 +149,6 @@ public class NetworkBubbleController : Singleton<NetworkBubbleController>
                 TargetController.I.ActivateTarget();
                 ZoomBubbleText(current_focused_bubble, false);
 
-                // 
-                // 
-                // 
                 // ノードを生成。
                 NetworkSpawnNode(current_selected_bubble, current_focused_bubble);
             }
@@ -149,9 +185,6 @@ public class NetworkBubbleController : Singleton<NetworkBubbleController>
         NetworkIconController.I.ShowEditMenuIcons(true);
         ChangeEditMode(0);
 
-        // 
-        // 
-        // 
         // 他の参加者のヒストリー編集権限を奪う。
         gameSession.PlayerMsg.Send(new NetworkSuspendHistoryEditMsg { suspend = true });
     }
@@ -171,9 +204,6 @@ public class NetworkBubbleController : Singleton<NetworkBubbleController>
             case BubbleEditMode.NONE: break;
             case BubbleEditMode.MOVE:
 
-                // 
-                // 
-                // 
                 // 他の参加者にバブルの移動を終了するようにメッセージを送る。
                 gameSession.PlayerMsg.Send(new NetworkBubbleMoveStopMsg { id = current_selected_bubble.id });
 
@@ -195,9 +225,6 @@ public class NetworkBubbleController : Singleton<NetworkBubbleController>
                 distanceFromDevice = Vector3.Distance(NetworkCameraManager.Instance.LocalProxy.position, current_selected_bubble.transform.position);
                 NetworkIconController.I.MoveSelectRing(3);
 
-                // 
-                // 
-                // 
                 // 他の参加者にバブルを動かすようメッセージを送る。
                 gameSession.PlayerMsg.Send(new NetworkBubbleMoveStartMsg { id = current_selected_bubble.id, distance = distanceFromDevice });
 
@@ -224,9 +251,6 @@ public class NetworkBubbleController : Singleton<NetworkBubbleController>
         {
             case BubbleEditMode.MOVE:
 
-                // 
-                // 
-                // 
                 // ローカルで自分の選択したバブルを自分で動かす。
                 Transform device_trans = NetworkCameraManager.Instance.LocalProxy;
                 Vector3 destination = device_trans.position + device_trans.forward * distanceFromDevice;
@@ -261,9 +285,6 @@ public class NetworkBubbleController : Singleton<NetworkBubbleController>
 
         TargetController.I.DeactivateAllTargets();
 
-        // 
-        // 
-        // 
         // ignoreRecordでないなら他の参加者に対してもレコードするようメッセージを送る。
         // ignoreRecordはRecordHistory内でtrueになってしまうので、その前に送信する。
         if (!ignoreRecord) gameSession.PlayerMsg.Send(new NetworkRecordMsg { });
@@ -271,9 +292,6 @@ public class NetworkBubbleController : Singleton<NetworkBubbleController>
         // Record 2.
         RecordHistory();
 
-        // 
-        // 
-        // 
         // 他の参加者のヒストリー編集権限を与える。
         gameSession.PlayerMsg.Send(new NetworkSuspendHistoryEditMsg { suspend = false });
     }
@@ -299,11 +317,6 @@ public class NetworkBubbleController : Singleton<NetworkBubbleController>
     NetworkBubble current_selected_bubble;
     float distanceFromDevice;
 
-
-
-    // 
-    // 
-    // 
     void MoveBubble(NetworkBubble bubble, Vector3 destination)
     {
         Transform device_trans = NetworkCameraManager.Instance.LocalProxy;
@@ -330,9 +343,6 @@ public class NetworkBubbleController : Singleton<NetworkBubbleController>
             ignoreRecord = false;
             ExitEditMode();
 
-            // 
-            // 
-            // 
             // 他の参加者に同じバブルを消すようメッセージを送る。
             gameSession.PlayerMsg.Send(new NetworkBubbleDiscardMsg { id = bubble.id });
         };
@@ -448,9 +458,6 @@ public class NetworkBubbleController : Singleton<NetworkBubbleController>
         current_selected_bubble.Color(color);
         NetworkIconController.I.ColorColoringButton(color);
 
-        // 
-        // 
-        // 
         gameSession.PlayerMsg.Send(new NetworkBubbleColorMsg { id = current_selected_bubble.id, colorNumber = color_number });
     }
 
@@ -533,9 +540,6 @@ public class NetworkBubbleController : Singleton<NetworkBubbleController>
 
         PlayBackHistory(editing_history);
 
-        // 
-        // 
-        // 
         // 他の参加者に対し歴史を戻すようメッセージを送る。
         gameSession.PlayerMsg.Send(new NetworkPlaybackMsg { editingHistory = editing_history });
     }
@@ -580,9 +584,6 @@ public class NetworkBubbleController : Singleton<NetworkBubbleController>
 
 
 
-    // 
-    // 
-    // 
     // Networking.
     IGameSession gameSession;
 
@@ -817,8 +818,16 @@ public class NetworkBubbleController : Singleton<NetworkBubbleController>
         // 送信者以外が実行する。
         if (sender == gameSession.LocalPlayer) return;
 
-        if (!msg.enableEdit && graphAction != GraphAction.NONE) ChangeGraphAction(0);
-        NetworkIconController.I.ShowGraphActionIcons(msg.enableEdit);
+        if (topMenu == TopMenu.GRAPH)
+        {
+            if (!msg.enableEdit && graphAction != GraphAction.NONE) ChangeGraphAction(0);
+            NetworkIconController.I.ShowGraphActionIcons(msg.enableEdit);
+        }
+        else
+        {
+            NetworkIconController.I.EnableGraphActions(msg.enableEdit);
+        }
+
     }
 
     // Player to Everybody.
