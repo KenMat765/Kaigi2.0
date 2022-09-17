@@ -14,6 +14,13 @@ public class NetworkIconController : Singleton<NetworkIconController>
     public float duration = 0.2f;
     public int historySliderValue { get { return (int)historySlider.value; } }
 
+    [SerializeField] RectTransform back;
+
+    [SerializeField] RectTransform topMenu;
+    Button subtitleButton, graphButton;
+
+    [SerializeField] Button subtitleVoiceButton;
+
     [SerializeField] RectTransform graphActions;
     Button generateButton, selectButton, historyButton;
 
@@ -34,6 +41,20 @@ public class NetworkIconController : Singleton<NetworkIconController>
     TextMeshProUGUI relocStartText;
 
 
+
+    public void ShowBackButton(bool show)
+    {
+        float destinationX = show ? 60 : -60;
+        back.DOAnchorPosX(destinationX, duration);
+    }
+
+    public void ShowTopMenu(bool show)
+    {
+        float destinationY = show ? 200 : -100;
+        topMenu.DOAnchorPosY(destinationY, duration);
+    }
+
+    public void ShowSubtitleVoiceButton(bool show) => subtitleVoiceButton.gameObject.SetActive(show);
 
     public void ShowGraphActionIcons(bool show)
     {
@@ -149,7 +170,7 @@ public class NetworkIconController : Singleton<NetworkIconController>
     void OnRelocalized()
     {
         reloc.SetActive(false);
-        ShowGraphActionIcons(true);
+        ShowTopMenu(true);
     }
 
 
@@ -157,6 +178,9 @@ public class NetworkIconController : Singleton<NetworkIconController>
     protected override void Awake()
     {
         base.Awake();
+
+        subtitleButton = topMenu.Find("Subtitle").GetComponent<Button>();
+        graphButton = topMenu.Find("Graph").GetComponent<Button>();
 
         generateButton = graphActions.Find("GenerateButton").GetComponent<Button>();
         selectButton = graphActions.Find("SelectButton").GetComponent<Button>();
@@ -202,8 +226,10 @@ public class NetworkIconController : Singleton<NetworkIconController>
         // 
         // 
         reloc.SetActive(true);
-        ShowGraphActionIcons(false);
+        ShowTopMenu(false);
 
+        ShowSubtitleVoiceButton(false);
+        ShowGraphActionIcons(false);
         ShowTriggerIcons(-1);
         ShowEditMenuIcons(false);
         ShowColorPallete(false);

@@ -95,6 +95,14 @@ public class NetworkHostNumberMsg
     [Key(0)] public uint hostNumber;
 }
 
+[System.Serializable]
+[NetworkMessage]
+[MessagePackObject]
+public class NetworkSubtitleMsg
+{
+    [Key(0)] public string voice;
+}
+
 // ホストがMove依頼を受けるために必要な情報群。
 // ホストがMove依頼を受け取ったタイミングで生成される。
 public class BubbleMoveInfoPack
