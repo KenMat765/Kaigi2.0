@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using DG.Tweening;
 using PretiaArCloud.Networking;
+using TextSpeech;
 
 public class NetworkBubbleController : Singleton<NetworkBubbleController>
 {
@@ -78,18 +79,15 @@ public class NetworkBubbleController : Singleton<NetworkBubbleController>
         }
     }
 
-    // public void WhilePressingVoiceInputButton()
-    // {
-    //     // Detect user's voice, and input as an argument of GenerateBubble() ...
-    // }
+    public void OnPressedVoiceInputButton()
+    {
+        VoiceInputSwitch.I.SwitchAction(actionNumber);
+        SpeechToText.Instance.StartRecording();
+    }
 
-    // 
-    // 
-    // 
     public void OnReleasedVoiceInputButton()
     {
-        // GenerateBubble("Debug");
-        NetworkSpawnBubble(gameSession.LocalPlayer.IsHost.ToString());
+        SpeechToText.Instance.StopRecording();
     }
 
     bool raycasting;
@@ -550,6 +548,12 @@ public class NetworkBubbleController : Singleton<NetworkBubbleController>
 
         bubblesParent = transform.Find("Bubbles");
         nodesParent = transform.Find("Nodes");
+    }
+
+    uint actionNumber;
+    void Start()
+    {
+        actionNumber = VoiceInputSwitch.I.RegisterAction(NetworkSpawnBubble);
     }
 
     void Update()
